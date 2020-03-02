@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace Cw1
     {
         static async Task Main(string[] args)
         {
-            if (string.IsNullOrEmpty(args[0]))
+            if (args.Length == 0)
             {
                 throw new ArgumentNullException("Nie podano argumentu");
             }
@@ -24,9 +25,9 @@ namespace Cw1
                 {
                     result = await client.GetAsync(args[0]);
                 }
-                catch (Exception ex)
+                catch (HttpRequestException)
                 {
-                    Console.WriteLine("Wystąpił bład podczas ładowania strony.");
+                    Console.WriteLine("Błąd w czasie pobierania strony");
                     return;
                 }
                 if (result.IsSuccessStatusCode)
@@ -37,11 +38,23 @@ namespace Cw1
                     var pageContent = await result.Content.ReadAsStringAsync();
 
                     MatchCollection matches = regex.Matches(pageContent);
-                    Console.WriteLine($"Znaleziono: {matches.Count} adresy/ów email.");
-
-                    for (int i = 0; i < matches.Count; i++)
+                    if (matches.Count == 0)
                     {
-                        Console.WriteLine($"{i}. {matches[i]}");
+                        Console.WriteLine("Nie znaleziono adresów email");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Znaleziono: {matches.Count} adresy/ów email.");
+
+                        HashSet<string> uniqeSet = new HashSet<string>();
+                        for (int i = 0; i < matches.Count; i++)
+                        {
+                            uniqeSet.Add(matches[i].ToString());
+                        }
+                        foreach (string email in uniqeSet)
+                        {
+                            Console.WriteLine(email);
+                        }
                     }
                 }
             }
