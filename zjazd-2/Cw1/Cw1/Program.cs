@@ -15,9 +15,6 @@ namespace Cw1
                 .WriteTo.File("łog.txt")
                 .CreateLogger();
 
-
-
-
             if (args.Length == 1 && string.IsNullOrEmpty(args[0]) == false)
             {
                 ValidatePossiblePathToFile(args[0]);
@@ -62,10 +59,5 @@ namespace Cw1
             Log.Logger.Error(errorMessage);
             throw new ArgumentException(errorMessage);
         }
-    }
-    public enum OutputFormat
-    {
-        NULL,
-        XML
     }
 }
