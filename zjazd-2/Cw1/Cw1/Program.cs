@@ -7,9 +7,11 @@ namespace Cw1
 {
     class Program
     {
-        public static string PathCSV { get; set; } = "data.csv";
-        public static string ResultPath { get; set; } = "żesult.xml";
-        public static OutputFormat OutputFormat { get; set; } = OutputFormat.XML;
+        private static string _pathCSV { get; set; } = "data.csv";
+        private static string _resultPath { get; set; } = "żesult.xml";
+        private static OutputFormat _outputFormat { get; set; } = OutputFormat.XML;
+        private static string _currentDirectory = Directory.GetCurrentDirectory();
+
         static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
@@ -19,13 +21,13 @@ namespace Cw1
             if (args.Length == 1 && string.IsNullOrEmpty(args[0]) == false)
             {
                 ValidatePossiblePathToFile(args[0]);
-                PathCSV = args[0];
+                _pathCSV = args[0];
             }
 
             if (args.Length == 2 && string.IsNullOrEmpty(args[1]) == false)
             {
                 ValidatePossiblePathToFile(args[1]);
-                ResultPath = args[1];
+                _resultPath = args[1];
             }
 
             if (args.Length == 3 && string.IsNullOrEmpty(args[2]) == false)
@@ -34,13 +36,13 @@ namespace Cw1
                 Enum.TryParse(typeof(OutputFormat), args[2], out output);
                 if ((OutputFormat) output == OutputFormat.NULL)
                 {
-                    Log.Logger.Error($"Nieznany typ pliku wyjściowego. Używam formatu domyślnego: {OutputFormat}");
+                    Log.Logger.Error($"Nieznany typ pliku wyjściowego. Używam formatu domyślnego: {_outputFormat}");
                 }
-                OutputFormat = (OutputFormat) output;
+                _outputFormat = (OutputFormat) output;
             }
             List<Student> students;
 
-            var parser = new StudentParser(PathCSV, ResultPath, OutputFormat);
+            var parser = new StudentParser(_pathCSV, _resultPath, _outputFormat);
             if ((students = parser.TryLoadInputFile()) == null)
             {
                 Log.Logger.Error($"Wynik przetwarzania pliku wejściowego to null.");
