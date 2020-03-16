@@ -4,6 +4,8 @@
     {
         NULL,
         Dzienne,
-        Zaoczne
+        Zaoczne,
+        Internetowe,
+        Wieczorowe
     }
 }

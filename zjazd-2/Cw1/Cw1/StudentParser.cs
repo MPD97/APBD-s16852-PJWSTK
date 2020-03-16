@@ -47,14 +47,11 @@ namespace Cw1
                         continue;
                     }
 
-                    for (int i = 0; i < columns.Length; i++)
+                    if (ValidColumns(line, columns) == false)
                     {
-                        if (string.IsNullOrWhiteSpace(columns[i]))
-                        {
-                            Log.Logger.Error($"Kolumna nr: {i}(liczone od 0) w linijce nr: {line}(liczone od 1) posiada pustą wartość.");
-                            break;
-                        }
+                        continue;
                     }
+                    
 
                     //Wojciech,Jankowski314,Informatyka dzienne po angielsku,Dzienne,4512,2000-02-12,314@pjwstk.edu.pl,Alina,Adam
                     var student = new Student();
@@ -85,6 +82,20 @@ namespace Cw1
             }
             return students;
         }
+
+        private static bool ValidColumns(int line, string[] columns)
+        {
+            for (int i = 0; i < columns.Length; i++)
+            {
+                if (string.IsNullOrWhiteSpace(columns[i]) || string.IsNullOrEmpty(columns[i]))
+                {
+                    Log.Logger.Error($"Kolumna nr: {i}(liczone od 0) w linijce nr: {line}(liczone od 1) posiada pustą wartość.");
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private void InputError(string file)
         {
             var errorMessage = $"Plik: {file} nie istnieje";
