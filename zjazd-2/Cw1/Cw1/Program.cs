@@ -7,10 +7,11 @@ namespace Cw1
 {
     class Program
     {
-        private static string _pathCSV { get; set; } = "data.csv";
-        private static string _resultPath { get; set; } = "żesult.xml";
-        private static OutputFormat _outputFormat { get; set; } = OutputFormat.XML;
         private static string _currentDirectory = Directory.GetCurrentDirectory();
+
+        private static string _pathCSV { get; set; } = Path.Combine(_currentDirectory, "data.csv");
+        private static string _resultPath { get; set; } = Path.Combine(_currentDirectory, "żesult.xml");
+        private static OutputFormat _outputFormat { get; set; } = OutputFormat.XML;
 
         static void Main(string[] args)
         {
@@ -22,11 +23,7 @@ namespace Cw1
             {
                 ValidatePossiblePathToFile(args[0]);
                 var combinedPath = Path.Combine(_currentDirectory, args[0]);
-                _pathCSV = File.Exists(args[0]) ?
-                        args[0] :
-                            File.Exists(combinedPath) ?
-                                        combinedPath :
-                                        throw new FileNotFoundException($"Plik {args[0]} nie istnieje");
+                _pathCSV = args[0];
             }
 
             if (args.Length >= 2 && string.IsNullOrEmpty(args[1]) == false)
