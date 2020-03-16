@@ -42,7 +42,17 @@ namespace Cw1
                 ResultPath = args[1];
             }
 
-           
+            if (args.Length == 3 && string.IsNullOrEmpty(args[2]) == false)
+            {
+                object output;
+                Enum.TryParse(typeof(OutputFormat), args[2], out output);
+                if ((OutputFormat) output == OutputFormat.NULL)
+                {
+                    Log.Logger.Error($"Nieznany typ pliku wyjściowego. Używam formatu domyślnego: {OutputFormat}");
+                }
+                ResultPath = args[1];
+            }
+
             Console.ReadLine();
         }
 
@@ -55,6 +65,7 @@ namespace Cw1
     }
     public enum OutputFormat
     {
+        NULL,
         XML
     }
 }
