@@ -27,6 +27,22 @@ namespace Cw1
                 }
                 PathCSV = args[0];
             }
+
+
+            if (args.Length == 2 && string.IsNullOrEmpty(args[1]) == false)
+            {
+                if (Directory.Exists(args[1]))
+                {
+                    InputError();
+                }
+                if (args[1].IndexOfAny(Path.GetInvalidPathChars()) != -1)
+                {
+                    InputError();
+                }
+                ResultPath = args[1];
+            }
+
+           
             Console.ReadLine();
         }
 
