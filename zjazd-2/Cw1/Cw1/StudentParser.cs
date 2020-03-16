@@ -22,7 +22,7 @@ namespace Cw1
 
         public bool TryLoadInputFile()
         {
-            if(File.Exists(InputCSVPath) == false)
+            if (File.Exists(InputCSVPath) == false)
             {
                 InputError(InputCSVPath);
             }
@@ -49,10 +49,10 @@ namespace Cw1
                         if (string.IsNullOrWhiteSpace(columns[i]))
                         {
                             Log.Logger.Error($"Kolumna nr: {i}(liczone od 0) w linijce nr: {line}(liczone od 1) posiada pustą wartość.");
-                            break;                       
+                            break;
                         }
                     }
-                    
+
                     //Wojciech,Jankowski314,Informatyka dzienne po angielsku,Dzienne,4512,2000-02-12,314@pjwstk.edu.pl,Alina,Adam
                     var student = new Student();
 
@@ -60,17 +60,25 @@ namespace Cw1
                     student.Lname = columns[1];
                     student.Index = columns[4];
 
-                    if(students.Any(ele => ele.Fname == student.Fname
-                                        && ele.Lname == student.Lname
-                                        && ele.Index == student.Index))
+                    if (students.Any(ele => ele.Fname == student.Fname
+                                         && ele.Lname == student.Lname
+                                         && ele.Index == student.Index))
                     {
                         Log.Logger.Warning($"Niepoprawny duplikat studenta o indeksie: {student.Index}");
                         continue;
                     }
 
+                    student.Birthdate = DateTime.Parse(columns[5]);
+                    student.Email = columns[6];
+                    student.MothersName = columns[7];
+                    student.FathersName = columns[8];
+
+                    var studies = new Studies();
+                    studies.Name = columns[2];
+                    studies.Mode = (Mode)Enum.Parse(typeof(Mode), columns[3]);
 
                     var value = string.Empty;
-                    
+
 
 
                 }
