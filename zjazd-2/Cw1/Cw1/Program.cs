@@ -18,19 +18,24 @@ namespace Cw1
                 .WriteTo.File("łog.txt")
                 .CreateLogger();
 
-            if (args.Length == 1 && string.IsNullOrEmpty(args[0]) == false)
+            if (args.Length >= 1 && string.IsNullOrEmpty(args[0]) == false)
             {
                 ValidatePossiblePathToFile(args[0]);
-                _pathCSV = args[0];
+                var combinedPath = Path.Combine(_currentDirectory, args[0]);
+                _pathCSV = File.Exists(args[0]) ?
+                        args[0] :
+                            File.Exists(combinedPath) ?
+                                        combinedPath :
+                                        throw new FileNotFoundException($"Plik {args[0]} nie istnieje");
             }
 
-            if (args.Length == 2 && string.IsNullOrEmpty(args[1]) == false)
+            if (args.Length >= 2 && string.IsNullOrEmpty(args[1]) == false)
             {
                 ValidatePossiblePathToFile(args[1]);
                 _resultPath = args[1];
             }
 
-            if (args.Length == 3 && string.IsNullOrEmpty(args[2]) == false)
+            if (args.Length >= 3 && string.IsNullOrEmpty(args[2]) == false)
             {
                 object output;
                 Enum.TryParse(typeof(OutputFormat), args[2], out output);
@@ -52,13 +57,17 @@ namespace Cw1
             Console.ReadLine();
         }
 
-        private static void ValidatePossiblePathToFile(string arg)
+        private static void ValidatePossiblePathToFile(string file)
         {
-            if (Directory.Exists(arg))
+            if (Directory.Exists(file))
             {
                 InputError();
             }
-            if (arg.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+            if (Directory.Exists(Path.Combine(_currentDirectory, file)))
+            {
+                InputError();
+            }
+            if (file.IndexOfAny(Path.GetInvalidPathChars()) != -1)
             {
                 InputError();
             }
