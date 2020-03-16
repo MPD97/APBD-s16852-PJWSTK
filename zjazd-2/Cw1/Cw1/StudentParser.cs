@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Cw1
@@ -53,8 +54,19 @@ namespace Cw1
                     }
                     
                     //Wojciech,Jankowski314,Informatyka dzienne po angielsku,Dzienne,4512,2000-02-12,314@pjwstk.edu.pl,Alina,Adam
-                    var Student = new Student();
+                    var student = new Student();
 
+                    student.Fname = columns[0];
+                    student.Lname = columns[1];
+                    student.Index = columns[4];
+
+                    if(students.Any(ele => ele.Fname == student.Fname
+                                        && ele.Lname == student.Lname
+                                        && ele.Index == student.Index))
+                    {
+                        Log.Logger.Warning($"Niepoprawny duplikat studenta o indeksie: {student.Index}");
+                        continue;
+                    }
 
 
                     var value = string.Empty;
