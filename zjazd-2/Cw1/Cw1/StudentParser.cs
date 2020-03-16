@@ -27,10 +27,18 @@ namespace Cw1
             }
             using (StreamReader stream = new StreamReader(InputCSVPath, Encoding.UTF8))
             {
-                string line = String.Empty;
-                while ((line = stream.ReadLine()) != null)
+                string row = string.Empty;
+                int line = 0;
+                int numberOfColumns = 9;
+                while ((row = stream.ReadLine()) != null)
                 {
-
+                    line++;
+                    string[] columns = row.Split(',');
+                    if (columns.Length != numberOfColumns)
+                    {
+                        Log.Logger.Error($"Line: {line} is not containging: {numberOfColumns} columns.");
+                        continue;
+                    }
                 }
             }
         }
