@@ -15,30 +15,18 @@ namespace Cw1
                 .WriteTo.File("łog.txt")
                 .CreateLogger();
 
+
+
+
             if (args.Length == 1 && string.IsNullOrEmpty(args[0]) == false)
             {
-                if (Directory.Exists(args[0]))
-                {
-                    InputError();
-                }
-                if (args[0].IndexOfAny(Path.GetInvalidPathChars()) != -1)
-                {
-                    InputError();
-                }
+                ValidatePossiblePathToFile(args[0]);
                 PathCSV = args[0];
             }
 
-
             if (args.Length == 2 && string.IsNullOrEmpty(args[1]) == false)
             {
-                if (Directory.Exists(args[1]))
-                {
-                    InputError();
-                }
-                if (args[1].IndexOfAny(Path.GetInvalidPathChars()) != -1)
-                {
-                    InputError();
-                }
+                ValidatePossiblePathToFile(args[1]);
                 ResultPath = args[1];
             }
 
@@ -50,10 +38,22 @@ namespace Cw1
                 {
                     Log.Logger.Error($"Nieznany typ pliku wyjściowego. Używam formatu domyślnego: {OutputFormat}");
                 }
-                ResultPath = args[1];
+                OutputFormat = (OutputFormat) output;
             }
 
             Console.ReadLine();
+        }
+
+        private static void ValidatePossiblePathToFile(string arg)
+        {
+            if (Directory.Exists(arg))
+            {
+                InputError();
+            }
+            if (arg.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+            {
+                InputError();
+            }
         }
 
         private static void InputError()
