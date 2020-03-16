@@ -6,6 +6,7 @@ namespace Cw1
 {
     class Student
     {
+        public string Index { get; set; }
         public string Fname { get; set; }
         public string Lname { get; set; }
         public DateTime Birthdate { get; set; }
