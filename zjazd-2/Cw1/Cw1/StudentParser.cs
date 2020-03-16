@@ -20,11 +20,14 @@ namespace Cw1
             OutputFormat = outputFormat;
         }
 
-        public bool TryLoadInputFile()
+        public List<Student> TryLoadInputFile()
         {
+            List<Student> students = null;
+
             if (File.Exists(InputCSVPath) == false)
             {
                 InputError(InputCSVPath);
+                return null;
             }
             using (StreamReader stream = new StreamReader(InputCSVPath, Encoding.UTF8))
             {
@@ -32,7 +35,7 @@ namespace Cw1
                 int line = 0;
                 int numberOfColumns = 9;
 
-                List<Student> students = new List<Student>();
+                students = new List<Student>();
 
                 while ((row = stream.ReadLine()) != null)
                 {
@@ -78,11 +81,9 @@ namespace Cw1
                     studies.Mode = (Mode)Enum.Parse(typeof(Mode), columns[3]);
 
                     var value = string.Empty;
-
-
-
                 }
             }
+            return students;
         }
         private void InputError(string file)
         {

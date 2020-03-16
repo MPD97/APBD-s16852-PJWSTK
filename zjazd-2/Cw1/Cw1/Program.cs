@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Cw1
@@ -37,6 +38,14 @@ namespace Cw1
                 }
                 OutputFormat = (OutputFormat) output;
             }
+            List<Student> students;
+
+            var parser = new StudentParser(PathCSV, ResultPath, OutputFormat);
+            if ((students = parser.TryLoadInputFile()) == null)
+            {
+                Log.Logger.Error($"Wynik przetwarzania pliku wejściowego to null.");
+            }
+
 
             Console.ReadLine();
         }
