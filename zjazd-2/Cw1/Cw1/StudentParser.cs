@@ -58,7 +58,7 @@ namespace Cw1
 
                     student.Fname = columns[0];
                     student.Lname = columns[1];
-                    student.Index = columns[4];
+                    student.Index = "s" + columns[4];
 
                     if (students.Any(ele => ele.Fname == student.Fname
                                          && ele.Lname == student.Lname

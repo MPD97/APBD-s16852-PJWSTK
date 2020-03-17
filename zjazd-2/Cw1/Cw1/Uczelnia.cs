@@ -16,8 +16,21 @@ namespace Cw1
 
         [XmlArray("studenci")]
         [XmlArrayItem("student")]
-
         public List<Student> Students { get; set; }
 
+
+        [XmlArray("activeStudies")]
+        [XmlArrayItem("studies")]
+        public List<ActiveStudieses> ActiveStudieses { get; set; }
+
+    }
+
+    public class ActiveStudieses
+    {
+        [XmlAttribute(AttributeName = "name")]
+        public string Name { get; set; }
+
+        [XmlAttribute(AttributeName = "numberOfStudents")]
+        public int NumberOfStudents { get; set; }
     }
 }
