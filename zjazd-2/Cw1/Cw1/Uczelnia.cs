@@ -14,9 +14,10 @@ namespace Cw1
         [XmlAttribute(AttributeName = "author")]
         public string Author { get; set; }
 
-        [XmlElement(ElementName = "studenci")]
-        //[XmlArray("TeamMembers")]
+        [XmlArray("studenci")]
+        [XmlArrayItem("student")]
 
         public List<Student> Students { get; set; }
+
     }
 }
