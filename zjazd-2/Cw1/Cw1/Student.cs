@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Cw1
 {
-    class Student
+    public class Student
     {
         public string Index { get; set; }
         public string Fname { get; set; }

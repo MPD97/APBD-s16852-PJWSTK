@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -16,6 +17,9 @@ namespace Cw1
 
         static void Main(string[] args)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.File("łog.txt")
                 .CreateLogger();
@@ -29,11 +33,7 @@ namespace Cw1
 
             if (args.Length >= 2 && string.IsNullOrEmpty(args[1]) == false)
             {
-                if (ResultPath.Contains('.'))
-                {
-                    var indexOfDot = ResultPath.LastIndexOf('.');
-                    ResultPath = ResultPath.Substring(indexOfDot, ResultPath.Length - indexOfDot);
-                }
+                RepairResultPath();
                 ValidatePossiblePathToFile(args[1]);
                 ResultPath = args[1];
             }
@@ -62,16 +62,30 @@ namespace Cw1
             college.CreatedAt = DateTime.Now.ToString("dd.MM.yyyy");
             college.Students = students;
 
+            RepairResultPath();
 
-            
-            XmlSerializer serializer = new XmlSerializer(typeof(Uczelnia));
-
-            using (StreamWriter streamWriter = new StreamWriter(ResultPath))
+            if (OutputFormat == OutputFormat.XML)
             {
-                
+                XmlSerializer serializer = new XmlSerializer(typeof(Uczelnia));
+
+                using (StreamWriter streamWriter = new StreamWriter(ResultPath + "." + OutputFormat.ToString().ToLower()))
+                {
+                    serializer.Serialize(streamWriter, college);
+                }
             }
 
+            sw.Stop();
+            Console.WriteLine($"Ukończenie serializacji pliku w czasie: {sw.ElapsedMilliseconds} milisekund");
             Console.ReadLine();
+        }
+
+        private static void RepairResultPath()
+        {
+            if (ResultPath.Contains('.'))
+            {
+                var indexOfDot = ResultPath.LastIndexOf('.');
+                ResultPath = ResultPath.Substring(0, ResultPath.Length - (ResultPath.Length - indexOfDot));
+            }
         }
 
         private static void ValidatePossiblePathToFile(string file)
