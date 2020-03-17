@@ -49,6 +49,9 @@ namespace Cw1
             {
                 Log.Logger.Error($"Wynik przetwarzania pliku wejściowego to null.");
             }
+            var college = new Uczelnia();
+            college.Author = "Mateusz Ambroziak";
+            college.CreatedAt = DateTime.Now.ToString("dd.MM.yyyy");
 
 
             Console.ReadLine();

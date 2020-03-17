@@ -68,7 +68,7 @@ namespace Cw1
                         continue;
                     }
 
-                    student.Birthdate = DateTime.Parse(columns[5]);
+                    student.Birthdate = DateTime.Parse(columns[5]).ToString("dd.MM.yyyy");
                     student.Email = columns[6];
                     student.MothersName = columns[7];
                     student.FathersName = columns[8];
