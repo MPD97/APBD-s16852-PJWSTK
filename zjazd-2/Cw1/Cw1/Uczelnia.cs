@@ -24,13 +24,4 @@ namespace Cw1
         public List<ActiveStudieses> ActiveStudieses { get; set; }
 
     }
-
-    public class ActiveStudieses
-    {
-        [XmlAttribute(AttributeName = "name")]
-        public string Name { get; set; }
-
-        [XmlAttribute(AttributeName = "numberOfStudents")]
-        public int NumberOfStudents { get; set; }
-    }
 }

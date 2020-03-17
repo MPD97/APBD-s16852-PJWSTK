@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace Cw1
@@ -61,6 +62,28 @@ namespace Cw1
             college.Author = "Mateusz Ambroziak";
             college.CreatedAt = DateTime.Now.ToString("dd.MM.yyyy");
             college.Students = students;
+
+
+            List<ActiveStudieses> activeStudies = new List<ActiveStudieses>();
+
+            foreach (var student in students)
+            {
+                var studiesName = student.Studies.Name;
+                ActiveStudieses findActive = null;
+                if ((findActive = activeStudies.FirstOrDefault(ele => ele.Name == studiesName)) == null)
+                {
+                    var active = new ActiveStudieses();
+                    active.Name = studiesName;
+
+                    activeStudies.Add(active);
+                }
+                else
+                {
+                    findActive.NumberOfStudents++;
+                }
+            }
+
+            college.ActiveStudieses = activeStudies;
 
             RepairResultPath();
 
