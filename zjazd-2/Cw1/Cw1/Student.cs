@@ -13,7 +13,7 @@ namespace Cw1
         public string Email { get; set; }
         public string MothersName { get; set; }
         public string FathersName { get; set; }
-        public List<Studies> Studies { get; set; }
+        public Studies Studies { get; set; }
 
     }
 }

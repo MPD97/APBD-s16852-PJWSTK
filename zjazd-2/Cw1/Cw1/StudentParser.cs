@@ -77,6 +77,9 @@ namespace Cw1
                     studies.Name = columns[2];
                     studies.Mode = (Mode)Enum.Parse(typeof(Mode), columns[3]);
 
+                    student.Studies = studies;
+
+                    students.Add(student);
                     var value = string.Empty;
                 }
             }
