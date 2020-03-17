@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Xml.Serialization;
 
 namespace Cw1
@@ -23,6 +26,7 @@ namespace Cw1
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.File("łog.txt")
+                .WriteTo.Console()
                 .CreateLogger();
 
             if (args.Length >= 1 && string.IsNullOrEmpty(args[0]) == false)
@@ -42,12 +46,15 @@ namespace Cw1
             if (args.Length >= 3 && string.IsNullOrEmpty(args[2]) == false)
             {
                 object output;
-                Enum.TryParse(typeof(OutputFormat), args[2], out output);
-                if ((OutputFormat) output == OutputFormat.NULL)
+                Enum.TryParse(typeof(OutputFormat), args[2].ToUpper(), out output);
+                if (output == null || (OutputFormat) output == OutputFormat.NULL)
                 {
                     Log.Logger.Error($"Nieznany typ pliku wyjściowego. Używam formatu domyślnego: {OutputFormat}");
                 }
-                OutputFormat = (OutputFormat) output;
+                else
+                {
+                    OutputFormat = (OutputFormat) output;
+                }
             }
             List<Student> students;
 
@@ -91,10 +98,19 @@ namespace Cw1
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(Uczelnia));
 
-                using (StreamWriter streamWriter = new StreamWriter(ResultPath + "." + OutputFormat.ToString().ToLower()))
+                using (StreamWriter streamWriter = new StreamWriter(ResultPath))
                 {
                     serializer.Serialize(streamWriter, college);
                 }
+            }
+            else if (OutputFormat == OutputFormat.JSON)
+            {
+                var jsonString = JsonSerializer.Serialize(college, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                });
+                File.WriteAllText(ResultPath, jsonString, Encoding.UTF8);
             }
 
             sw.Stop();
@@ -109,6 +125,8 @@ namespace Cw1
                 var indexOfDot = ResultPath.LastIndexOf('.');
                 ResultPath = ResultPath.Substring(0, ResultPath.Length - (ResultPath.Length - indexOfDot));
             }
+
+            ResultPath = ResultPath + "." + OutputFormat.ToString().ToLower();
         }
 
         private static void ValidatePossiblePathToFile(string file)
