@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace Cw1
 {
+    [JsonObjectAttribute(Title = "Uczelnia")]
     public class Uczelnia
     {
         [XmlAttribute(AttributeName = "createdAt")]
@@ -16,6 +18,8 @@ namespace Cw1
 
         [XmlArray("studenci")]
         [XmlArrayItem("student")]
+        [JsonProperty("studenci")]
+
         public List<Student> Students { get; set; }
 
 

@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Cw1
 {
@@ -105,10 +107,13 @@ namespace Cw1
             }
             else if (OutputFormat == OutputFormat.JSON)
             {
-                var jsonString = JsonSerializer.Serialize(college, new JsonSerializerOptions
+                var root = new
                 {
-                    WriteIndented = true,
-                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                    uczelnia = college
+                };
+                var jsonString = JsonConvert.SerializeObject(root, new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
                 });
                 File.WriteAllText(ResultPath, jsonString, Encoding.UTF8);
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace Cw1
 {
@@ -11,6 +12,8 @@ namespace Cw1
     {
         
         [XmlAttribute(AttributeName = "indexNumber")]
+        [JsonProperty("indexNumber")]
+
         public string Index { get; set; }
 
         [XmlElement(ElementName = "fname")]
