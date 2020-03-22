@@ -50,9 +50,9 @@ namespace Cw3.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteStudent(Student student)
+        public IActionResult DeleteStudent(int studentId)
         {
-            if (student != null)
+            if (studentId != 0)
             {
                 return Ok("Usunięto studenta");
             }
