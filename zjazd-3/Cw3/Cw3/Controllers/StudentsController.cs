@@ -38,9 +38,9 @@ namespace Cw3.Controllers
             return Ok(student);
         }
         [HttpPut]
-        public IActionResult PutStudent(Student student)
+        public IActionResult PutStudent(int studentId)
         {
-            if (student != null)
+            if (studentId != 0)
             {
                 return Ok("Zaktualizowano");
             }
