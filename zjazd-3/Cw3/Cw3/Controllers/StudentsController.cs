@@ -54,7 +54,7 @@ namespace Cw3.Controllers
         {
             if (studentId != 0)
             {
-                return Ok("Usunięto studenta");
+                return Ok("Usuwanie ukończone");
             }
 
             return NotFound("Nie udało się usunąć studenta");
