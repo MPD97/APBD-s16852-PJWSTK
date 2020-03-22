@@ -37,5 +37,16 @@ namespace Cw3.Controllers
             student.IndexNumber = $"s{new Random().Next(1, 20000)}";
             return Ok(student);
         }
+        [HttpPut]
+        public IActionResult PutStudent(Student student)
+        {
+            if (student != null)
+            {
+                return Ok("Zaktualizowano");
+            }
+
+            return NotFound("Nie udało się zaktualizować studenta");
+
+        }
     }
 }
