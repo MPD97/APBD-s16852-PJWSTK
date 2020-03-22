@@ -48,5 +48,17 @@ namespace Cw3.Controllers
             return NotFound("Nie udało się zaktualizować studenta");
 
         }
+
+        [HttpDelete]
+        public IActionResult DeleteStudent(Student student)
+        {
+            if (student != null)
+            {
+                return Ok("Usunięto studenta");
+            }
+
+            return NotFound("Nie udało się usunąć studenta");
+
+        }
     }
 }
