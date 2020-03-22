@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Cw1": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\Users\\mateu\\OneDrive\\Pulpit\\Projekty\\APBD-s16852-PJWSTK\\zjazd-2\\Cw1\\Cw1\\bin\\Debug\\netcoreapp3.1\\dane.csv\""
+    }
+  }
+}
