@@ -42,7 +42,7 @@ namespace Cw3.Controllers
         {
             if (studentId != 0)
             {
-                return Ok("Zaktualizowano");
+                return Ok("Aktualizacja dokończona");
             }
 
             return NotFound("Nie udało się zaktualizować studenta");
