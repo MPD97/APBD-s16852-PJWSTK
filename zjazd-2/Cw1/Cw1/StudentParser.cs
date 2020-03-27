@@ -58,7 +58,7 @@ namespace Cw1
 
                     student.Fname = columns[0];
                     student.Lname = columns[1];
-                    student.Index = columns[4];
+                    student.Index = "s" + columns[4];
 
                     if (students.Any(ele => ele.Fname == student.Fname
                                          && ele.Lname == student.Lname
@@ -68,7 +68,7 @@ namespace Cw1
                         continue;
                     }
 
-                    student.Birthdate = DateTime.Parse(columns[5]);
+                    student.Birthdate = DateTime.Parse(columns[5]).ToString("dd.MM.yyyy");
                     student.Email = columns[6];
                     student.MothersName = columns[7];
                     student.FathersName = columns[8];
@@ -77,6 +77,9 @@ namespace Cw1
                     studies.Name = columns[2];
                     studies.Mode = (Mode)Enum.Parse(typeof(Mode), columns[3]);
 
+                    student.Studies = studies;
+
+                    students.Add(student);
                     var value = string.Empty;
                 }
             }
