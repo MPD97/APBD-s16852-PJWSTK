@@ -1,57 +1,137 @@
 ﻿using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Xml.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Cw1
 {
     class Program
     {
-        private static string _currentDirectory = Directory.GetCurrentDirectory();
+        private static readonly string CurrentDirectory = Directory.GetCurrentDirectory();
 
-        private static string _pathCSV { get; set; } = Path.Combine(_currentDirectory, "data.csv");
-        private static string _resultPath { get; set; } = Path.Combine(_currentDirectory, "żesult.xml");
-        private static OutputFormat _outputFormat { get; set; } = OutputFormat.XML;
+        private static string PathCsv { get; set; } = Path.Combine(CurrentDirectory, "data.csv");
+        private static string ResultPath { get; set; } = Path.Combine(CurrentDirectory, "żesult.xml");
+        private static OutputFormat OutputFormat { get; set; } = OutputFormat.XML;
 
         static void Main(string[] args)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.File("łog.txt")
+                .WriteTo.Console()
                 .CreateLogger();
 
             if (args.Length >= 1 && string.IsNullOrEmpty(args[0]) == false)
             {
                 ValidatePossiblePathToFile(args[0]);
-                var combinedPath = Path.Combine(_currentDirectory, args[0]);
-                _pathCSV = args[0];
+                var combinedPath = Path.Combine(CurrentDirectory, args[0]);
+                PathCsv = args[0];
             }
 
             if (args.Length >= 2 && string.IsNullOrEmpty(args[1]) == false)
             {
+                RepairResultPath();
                 ValidatePossiblePathToFile(args[1]);
-                _resultPath = args[1];
+                ResultPath = args[1];
             }
 
             if (args.Length >= 3 && string.IsNullOrEmpty(args[2]) == false)
             {
                 object output;
-                Enum.TryParse(typeof(OutputFormat), args[2], out output);
-                if ((OutputFormat) output == OutputFormat.NULL)
+                Enum.TryParse(typeof(OutputFormat), args[2].ToUpper(), out output);
+                if (output == null || (OutputFormat) output == OutputFormat.NULL)
                 {
-                    Log.Logger.Error($"Nieznany typ pliku wyjściowego. Używam formatu domyślnego: {_outputFormat}");
+                    Log.Logger.Error($"Nieznany typ pliku wyjściowego. Używam formatu domyślnego: {OutputFormat}");
                 }
-                _outputFormat = (OutputFormat) output;
+                else
+                {
+                    OutputFormat = (OutputFormat) output;
+                }
             }
             List<Student> students;
 
-            var parser = new StudentParser(_pathCSV, _resultPath, _outputFormat);
+            var parser = new StudentParser(PathCsv, ResultPath, OutputFormat);
             if ((students = parser.TryLoadInputFile()) == null)
             {
-                Log.Logger.Error($"Wynik przetwarzania pliku wejściowego to null.");
+                var message = "Wynik przetwarzania pliku wejściowego to null.";
+                Log.Logger.Error(message);
+                throw new ArgumentNullException(message);
+            }
+            var college = new Uczelnia();
+            college.Author = "Mateusz Ambroziak";
+            college.CreatedAt = DateTime.Now.ToString("dd.MM.yyyy");
+            college.Students = students;
+
+
+            List<ActiveStudieses> activeStudies = new List<ActiveStudieses>();
+
+            foreach (var student in students)
+            {
+                var studiesName = student.Studies.Name;
+                ActiveStudieses findActive = null;
+                if ((findActive = activeStudies.FirstOrDefault(ele => ele.Name == studiesName)) == null)
+                {
+                    var active = new ActiveStudieses();
+                    active.Name = studiesName;
+
+                    activeStudies.Add(active);
+                }
+                else
+                {
+                    findActive.NumberOfStudents++;
+                }
             }
 
+            college.ActiveStudieses = activeStudies;
 
+            RepairResultPath();
+
+            if (OutputFormat == OutputFormat.XML)
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(Uczelnia));
+
+                using (StreamWriter streamWriter = new StreamWriter(ResultPath))
+                {
+                    serializer.Serialize(streamWriter, college);
+                }
+            }
+            else if (OutputFormat == OutputFormat.JSON)
+            {
+                var root = new
+                {
+                    uczelnia = college
+                };
+                var jsonString = JsonConvert.SerializeObject(root, new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                });
+                File.WriteAllText(ResultPath, jsonString, Encoding.UTF8);
+            }
+
+            sw.Stop();
+            Console.WriteLine($"Ukończenie serializacji pliku w czasie: {sw.ElapsedMilliseconds} milisekund");
             Console.ReadLine();
+        }
+
+        private static void RepairResultPath()
+        {
+            if (ResultPath.Contains('.'))
+            {
+                var indexOfDot = ResultPath.LastIndexOf('.');
+                ResultPath = ResultPath.Substring(0, ResultPath.Length - (ResultPath.Length - indexOfDot));
+            }
+
+            ResultPath = ResultPath + "." + OutputFormat.ToString().ToLower();
         }
 
         private static void ValidatePossiblePathToFile(string file)
@@ -60,7 +140,7 @@ namespace Cw1
             {
                 InputError();
             }
-            if (Directory.Exists(Path.Combine(_currentDirectory, file)))
+            if (Directory.Exists(Path.Combine(CurrentDirectory, file)))
             {
                 InputError();
             }
