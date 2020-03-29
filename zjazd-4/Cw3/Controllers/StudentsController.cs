@@ -36,7 +36,16 @@ namespace Cw3.Controllers
                 {
                     
                     command.Connection = connection;
-                    command.CommandText = "Select FirstName, LastName, BirthDate from Students";
+                    command.CommandText = @"SELECT [FirstName]
+                                                  ,[LastName]
+                                                  ,[BirthDate]
+	                                              ,[Name]
+	                                              ,[Semester]
+                                              FROM Student
+                                              INNER JOIN Enrollment
+                                              ON Student.IdEnrollment = Enrollment.IdEnrollment
+                                              Inner Join Studies
+                                              ON Enrollment.IdStudy = Studies.IdStudy;";
 
                     connection.Open();
                     var dataReader = command.ExecuteReader();
@@ -45,7 +54,9 @@ namespace Cw3.Controllers
                         student = new Student();
                         student.FirstName = dataReader["FirstName"].ToString();
                         student.LastName = dataReader["LastName"].ToString();
-                        student.IndexNumber = dataReader["IndexNumber"].ToString();
+                        student.BirthDate = DateTime.Parse(dataReader["BirthDate"].ToString());
+                        student.StudiesName = dataReader["Name"].ToString();
+                        student.SemestrNumber = int.Parse(dataReader["Semester"].ToString());
                     }
                 }
             }
