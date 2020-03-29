@@ -29,14 +29,15 @@ namespace Cw3.Controllers
         [HttpGet("{id}")]
         public IActionResult GetStudent(int id)
         {
-            Student student;
+            Student student = new Student();
+
             using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s16852;Integrated Security=True"))
             {
                 using (SqlCommand command = new SqlCommand())
                 {
                     
                     command.Connection = connection;
-                    command.CommandText = @"SELECT [FirstName]
+                    command.CommandText = @"SELECT TOP (1) [FirstName]
                                                   ,[LastName]
                                                   ,[BirthDate]
 	                                              ,[Name]
@@ -51,7 +52,6 @@ namespace Cw3.Controllers
                     var dataReader = command.ExecuteReader();
                     while (dataReader.Read())
                     {
-                        student = new Student();
                         student.FirstName = dataReader["FirstName"].ToString();
                         student.LastName = dataReader["LastName"].ToString();
                         student.BirthDate = DateTime.Parse(dataReader["BirthDate"].ToString());
@@ -60,6 +60,7 @@ namespace Cw3.Controllers
                     }
                 }
             }
+            return Ok(student);
         }
 
         [HttpPost]
