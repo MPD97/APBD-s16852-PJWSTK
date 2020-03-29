@@ -21,34 +21,88 @@ namespace Cw3.Controllers
             _dbService = dbService;
         }
 
+        //[HttpGet]
+        //public IActionResult GetStudent(string orderBy)
+        //{
+        //    return Ok(_dbService.GetStudents());
+        //}
+
         [HttpGet]
-        public IActionResult GetStudent(string orderBy)
+        public IActionResult GetStudent()
         {
-            return Ok(_dbService.GetStudents());
-        }
-        [HttpGet("{id}")]
-        public IActionResult GetStudent(int id)
-        {
-            Student student;
+            List<Student> students = new List<Student>();
+
             using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s16852;Integrated Security=True"))
             {
                 using (SqlCommand command = new SqlCommand())
                 {
-                    
+
                     command.Connection = connection;
-                    command.CommandText = "Select FirstName, LastName, BirthDate from Students";
+                    command.CommandText = @"SELECT [FirstName]
+                                                  ,[LastName]
+                                                  ,[BirthDate]
+	                                              ,[Name]
+	                                              ,[Semester]
+                                              FROM Student
+                                              INNER JOIN Enrollment
+                                              ON Student.IdEnrollment = Enrollment.IdEnrollment
+                                              Inner Join Studies
+                                              ON Enrollment.IdStudy = Studies.IdStudy;";
 
                     connection.Open();
                     var dataReader = command.ExecuteReader();
                     while (dataReader.Read())
                     {
-                        student = new Student();
+                        Student student = new Student();
+
                         student.FirstName = dataReader["FirstName"].ToString();
                         student.LastName = dataReader["LastName"].ToString();
-                        student.IndexNumber = dataReader["IndexNumber"].ToString();
+                        student.BirthDate = DateTime.Parse(dataReader["BirthDate"].ToString());
+                        student.StudiesName = dataReader["Name"].ToString();
+                        student.SemestrNumber = int.Parse(dataReader["Semester"].ToString());
+
+                        students.Add(student);
                     }
                 }
             }
+            return Ok(students);
+        }
+        [HttpGet("{indexNumber}")]
+        public IActionResult GetStudent(string indexNumber)
+        {
+            Student student = new Student();
+
+            using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s16852;Integrated Security=True"))
+            {
+                using (SqlCommand command = new SqlCommand())
+                {
+
+                    command.Connection = connection;
+                    command.CommandText = @"SELECT TOP (1) [FirstName]
+                                                  ,[LastName]
+                                                  ,[BirthDate]
+	                                              ,[Name]
+	                                              ,[Semester]
+                                              FROM Student
+                                              INNER JOIN Enrollment
+                                              ON Student.IdEnrollment = Enrollment.IdEnrollment
+                                              Inner Join Studies
+                                              ON Enrollment.IdStudy = Studies.IdStudy
+                                              WHERE Student.IndexNumber = @indexNumber;";
+                    command.Parameters.AddWithValue("indexNumber", indexNumber);
+                    connection.Open();
+                    var dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        student.FirstName = dataReader["FirstName"].ToString();
+                        student.LastName = dataReader["LastName"].ToString();
+                        student.BirthDate = DateTime.Parse(dataReader["BirthDate"].ToString());
+                        student.StudiesName = dataReader["Name"].ToString();
+                        student.SemestrNumber = int.Parse(dataReader["Semester"].ToString());
+                    }
+                }
+            }
+            return Ok(student);
         }
 
         [HttpPost]
