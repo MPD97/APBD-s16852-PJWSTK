@@ -26,6 +26,47 @@ namespace Cw3.Controllers
         //{
         //    return Ok(_dbService.GetStudents());
         //}
+
+        [HttpGet]
+        public IActionResult GetStudent()
+        {
+            List<Student> students = new List<Student>();
+
+            using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s16852;Integrated Security=True"))
+            {
+                using (SqlCommand command = new SqlCommand())
+                {
+
+                    command.Connection = connection;
+                    command.CommandText = @"SELECT [FirstName]
+                                                  ,[LastName]
+                                                  ,[BirthDate]
+	                                              ,[Name]
+	                                              ,[Semester]
+                                              FROM Student
+                                              INNER JOIN Enrollment
+                                              ON Student.IdEnrollment = Enrollment.IdEnrollment
+                                              Inner Join Studies
+                                              ON Enrollment.IdStudy = Studies.IdStudy;";
+
+                    connection.Open();
+                    var dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        Student student = new Student();
+
+                        student.FirstName = dataReader["FirstName"].ToString();
+                        student.LastName = dataReader["LastName"].ToString();
+                        student.BirthDate = DateTime.Parse(dataReader["BirthDate"].ToString());
+                        student.StudiesName = dataReader["Name"].ToString();
+                        student.SemestrNumber = int.Parse(dataReader["Semester"].ToString());
+
+                        students.Add(student);
+                    }
+                }
+            }
+            return Ok(students);
+        }
         [HttpGet("{indexNumber}")]
         public IActionResult GetStudent(string indexNumber)
         {
@@ -62,47 +103,6 @@ namespace Cw3.Controllers
                 }
             }
             return Ok(student);
-        }
-
-        [HttpGet]
-        public IActionResult GetStudent()
-        {
-            List<Student> students = new List<Student>();
-
-            using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s16852;Integrated Security=True"))
-            {
-                using (SqlCommand command = new SqlCommand())
-                {
-                    
-                    command.Connection = connection;
-                    command.CommandText = @"SELECT [FirstName]
-                                                  ,[LastName]
-                                                  ,[BirthDate]
-	                                              ,[Name]
-	                                              ,[Semester]
-                                              FROM Student
-                                              INNER JOIN Enrollment
-                                              ON Student.IdEnrollment = Enrollment.IdEnrollment
-                                              Inner Join Studies
-                                              ON Enrollment.IdStudy = Studies.IdStudy;";
-
-                    connection.Open();
-                    var dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        Student student = new Student();
-
-                        student.FirstName = dataReader["FirstName"].ToString();
-                        student.LastName = dataReader["LastName"].ToString();
-                        student.BirthDate = DateTime.Parse(dataReader["BirthDate"].ToString());
-                        student.StudiesName = dataReader["Name"].ToString();
-                        student.SemestrNumber = int.Parse(dataReader["Semester"].ToString());
-
-                        students.Add(student);
-                    }
-                }
-            }
-            return Ok(students);
         }
 
         [HttpPost]
