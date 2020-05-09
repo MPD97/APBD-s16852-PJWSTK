@@ -42,5 +42,24 @@ namespace Cw4.Controllers
 
             return StatusCode(201, result.Response);
         }
+
+        [HttpPost("promotions")]
+        public IActionResult EnrollStudent(EnrollPromoteRequest request)
+        {
+            if (ModelState.IsValid == false)
+            {
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+
+                return BadRequest(allErrors);
+            }
+
+            var result = _service.EnrollStudent(request);
+            if (result.Success == false)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return StatusCode(201, result.Response);
+        }
     }
 }

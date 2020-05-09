@@ -18,10 +18,6 @@ namespace Cw4.Services
                 Message = string.Empty
             };
 
-            var st = new Student();
-            st.FirstName = model.FirstName;
-
-
             using (var con = new SqlConnection(ConnectionString))
             using (var cmd = new SqlCommand())
             {
@@ -45,6 +41,8 @@ namespace Cw4.Services
                         return result;
                     }
                     int idStudies = (int)dr["IdStudies"];
+                    dr.Close();
+                    cmd.Parameters.Clear();
 
                     cmd.CommandText = "select TOP(1) IdEnrollment, StartDate from Enrollment where IdStudy=@idStudy and semester=1";
                     cmd.Parameters.AddWithValue("idStudy", idStudies);
@@ -53,6 +51,9 @@ namespace Cw4.Services
                     DateTime dateStart;
                     if (!dr.Read())
                     {
+                        dr.Close();
+                        cmd.Parameters.Clear();
+
                         dateStart = DateTime.Now;
                         cmd.CommandText = "insert into Enrollment (Semester, IdStudy, StartDate) " +
                                            "values 1, @idStudy, @dateNow; SELECT SCOPE_IDENTITY()";
@@ -60,6 +61,7 @@ namespace Cw4.Services
                         cmd.Parameters.AddWithValue("dateNow", dateStart);
 
                         idEnrolment = (int)cmd.ExecuteScalar();
+                        cmd.Parameters.Clear();
                     }
                     else
                     {
@@ -70,6 +72,7 @@ namespace Cw4.Services
 
                     cmd.CommandText = "select TOP(1) IndexNumber from Student where IndexNumber=@indexNumber";
                     cmd.Parameters.AddWithValue("indexNumber", model.IndexNumber);
+                    dr = cmd.ExecuteReader();
 
                     if (dr.Read())
                     {
@@ -79,6 +82,9 @@ namespace Cw4.Services
                         result.Success = false;
                         return result;
                     }
+                    dr.Close();
+                    cmd.Parameters.Clear();
+
                     cmd.CommandText = "INSERT INTO Student (IndexNumber, FirstName, LastName, BirthDate, IdEnrollment) " +
                                         " VALUES @indexNumber, @firstName, @lastName, @birthDate, @idEnrollment ; SELECT SCOPE_IDENTITY()";
                     cmd.Parameters.AddWithValue("indexNumber", model.IndexNumber);
@@ -87,7 +93,16 @@ namespace Cw4.Services
                     cmd.Parameters.AddWithValue("birthDate", model.Birthdate);
                     cmd.Parameters.AddWithValue("idEnrollment", idEnrolment);
 
-                    idEnrolment = cmd.ExecuteNonQuery();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    if (rowsAffected <= 0)
+                    {
+                        tran.Rollback();
+
+                        result.Message = "Nie można utworzyć nowego studenta.";
+                        result.Success = false;
+                        return result;
+                    }
+
                     result.Model = new EnrollStudentResponse
                     {
                         FirstName = model.FirstName,
@@ -113,7 +128,53 @@ namespace Cw4.Services
 
         public ServicePromoteResult PromoteStudents(EnrollPromoteRequest model)
         {
-            throw new NotImplementedException();
+            ServicePromoteResult result = new ServicePromoteResult
+            {
+                Success = true,
+                Message = string.Empty
+            };
+
+            using (var con = new SqlConnection(ConnectionString))
+            using (var cmd = new SqlCommand())
+            {
+                cmd.Connection = con;
+
+                con.Open();
+                var tran = con.BeginTransaction();
+
+                try
+                {
+                    cmd.CommandText = "select * from enrollment where IdStudy = (select IdStudy from studies where Name = @studyName) and Semester = @semester";
+                    cmd.Parameters.AddWithValue("studyName", model.Studies);
+                    cmd.Parameters.AddWithValue("semester", model.Semester);
+
+                    var dr = cmd.ExecuteReader();
+
+                    if (!dr.Read())
+                    {
+                        dr.Close();
+                        result.Message = "Taki enrollment nie istnieje";
+                        result.Success = false;
+                        return result;
+                    }
+                    dr.Close();
+                    cmd.Parameters.Clear();
+
+
+
+                 
+                    tran.Commit();
+                }
+                catch (SqlException exc)
+                {
+                    Console.WriteLine(exc.Message);
+
+                    result.Message = "Błąd wewnętrzny.";
+                    result.Success = false;
+                    tran.Rollback();
+                }
+            }
+            return result;
         }
     }
 }
