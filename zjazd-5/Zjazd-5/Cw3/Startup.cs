@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cw3.DAL;
+using Cw4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,6 +26,8 @@ namespace Cw3
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IStudentDbService, SqlServerStudentDbService>();
+
             services.AddControllers();
         }
 
