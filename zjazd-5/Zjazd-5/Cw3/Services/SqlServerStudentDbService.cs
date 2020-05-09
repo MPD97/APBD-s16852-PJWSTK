@@ -14,7 +14,7 @@ namespace Cw4.Services
 
         }
 
-        public ServiceResult EnrollStudent(EnrollStudentRequest request)
+        public ServiceResult EnrollStudent(EnrollStudentRequest model)
         {
             ServiceResult result = new ServiceResult
             {
@@ -23,7 +23,7 @@ namespace Cw4.Services
             };
 
             var st = new Student();
-            st.FirstName = request.FirstName;
+            st.FirstName = model.FirstName;
 
 
             using (var con = new SqlConnection(ConnectionString))
@@ -37,7 +37,7 @@ namespace Cw4.Services
                 try
                 {
                     cmd.CommandText = "select TOP(1) IdStudies from Studies where Name=@name";
-                    cmd.Parameters.AddWithValue("name", request.Studies);
+                    cmd.Parameters.AddWithValue("name", model.Studies);
 
                     var dr = cmd.ExecuteReader();
                     if (!dr.Read())
@@ -68,11 +68,18 @@ namespace Cw4.Services
                         idEnrolment = (int)dr["IdEnrollment"];
                     }
 
-                   
-                    //com.CommandText = "INSERT INTO Student(IndexNumber, FirstName) VALUES(@Index, @Fname)";
-                    //com.Parameters.AddWithValue("index", request.IndexNumber);
 
-                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = "select TOP(1) IndexNumber from Student where IndexNumber=@indexNumber";
+                    cmd.Parameters.AddWithValue("indexNumber", model.IndexNumber);
+
+                    if (dr.Read())
+                    {
+                        tran.Rollback();
+
+                        result.Message = "Student o takim indexie istnieje w bazie danych.";
+                        result.Success = false;
+                        return result;
+                    }
 
                     tran.Commit();
                 }
