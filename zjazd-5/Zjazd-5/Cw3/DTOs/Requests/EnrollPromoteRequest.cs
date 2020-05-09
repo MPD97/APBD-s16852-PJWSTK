@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Cw4.DTOs.Responses
+namespace Cw4.DTOs.Requests
 {
-    public class EnrolStudentResponse
+    public class EnrollPromoteRequest
     {
-        public string LastName { get; set; }
+        [Required]
+        public string Studies { get; set; }
+        [Required]
         public int Semester { get; set; }
-        public DateTime StartDate { get; set; }
     }
 }

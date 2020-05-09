@@ -39,11 +39,8 @@ namespace Cw4.Controllers
             {
                 return BadRequest(result.Message);
             }
-            var response = new EnrolStudentResponse();
-            //response.LastName = st.LastName;
-            //...
 
-            return Ok(response);
+            return StatusCode(201, result.Response);
         }
     }
 }
