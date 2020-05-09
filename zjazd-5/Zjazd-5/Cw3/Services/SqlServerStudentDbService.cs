@@ -27,19 +27,19 @@ namespace Cw4.Services
 
 
             using (var con = new SqlConnection(ConnectionString))
-            using (var com = new SqlCommand())
+            using (var cmd = new SqlCommand())
             {
-                com.Connection = con;
+                cmd.Connection = con;
 
                 con.Open();
                 var tran = con.BeginTransaction();
 
                 try
                 {
-                    com.CommandText = "select IdStudies from studies where name=@name";
-                    com.Parameters.AddWithValue("name", request.Studies);
+                    cmd.CommandText = "select IdStudies from studies where name=@name";
+                    cmd.Parameters.AddWithValue("name", request.Studies);
 
-                    var dr = com.ExecuteReader();
+                    var dr = cmd.ExecuteReader();
                     if (!dr.Read())
                     {
                         tran.Rollback();
@@ -50,22 +50,29 @@ namespace Cw4.Services
                     }
                     int idStudies = (int)dr["IdStudies"];
 
-                    com.CommandText = "select top(1) IdEnrollment from Enrollment where idStudy=@idStudy and semester=1";
-                    com.Parameters.AddWithValue("idStudy", idStudies);
+                    cmd.CommandText = "select top(1) IdEnrollment from Enrollment where idStudy=@idStudy and semester=1";
+                    cmd.Parameters.AddWithValue("idStudy", idStudies);
+                    int idEnrolment;
+                    
                     if (!dr.Read())
                     {
-                        tran.Rollback();
+                        cmd.CommandText = "insert into Enrollment (semester,idStudy) " +
+                                           "values 1, @idStudy; SELECT SCOPE_IDENTITY()";
+                        cmd.Parameters.AddWithValue("idStudy", idStudies);
+                       
+                        idEnrolment = (int)cmd.ExecuteScalar();
 
-                        result.Message = "Zapis nie istnieje";
-                        result.Success = false;
-                        return result;
+                    }
+                    else
+                    {
+                        idEnrolment = (int)dr["IdEnrollment"];
                     }
 
-                    int idEnrolment = (int)dr["IdEnrollment"];
+                   
                     //com.CommandText = "INSERT INTO Student(IndexNumber, FirstName) VALUES(@Index, @Fname)";
                     //com.Parameters.AddWithValue("index", request.IndexNumber);
 
-                    com.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
 
                     tran.Commit();
                 }
