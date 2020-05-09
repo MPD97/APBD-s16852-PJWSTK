@@ -12,8 +12,6 @@ namespace Cw4.DTOs.Requests
         [RegularExpression("^s[0-9]{5}$", ErrorMessage = "Index musi mieć s na początku i 5 znaków.")]
         public string IndexNumber { get; set; }
 
-        public string Email { get; set; }
-
         [Required(ErrorMessage = "Musisz podać imię")]
         [MinLength(2, ErrorMessage = "Minimalna długośc to 2 znaki")]
         [MaxLength(10, ErrorMessage = "Maksymalna długośc to 10 znaków")]

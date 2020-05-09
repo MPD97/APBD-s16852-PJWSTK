@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Cw3.Models;
 using Cw4.DTOs.Requests;
 using Cw4.DTOs.Responses;
 using Cw4.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Cw4.Controllers
 {
@@ -24,6 +27,12 @@ namespace Cw4.Controllers
         [HttpPost]
         public IActionResult EnrollStudent(EnrollStudentRequest request)
         {
+            if (ModelState.IsValid == false)
+            {
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+
+                return BadRequest(allErrors);
+            }
             _service.EnrollStudent(request);
             var response = new EnrolStudentResponse();
             //response.LastName = st.LastName;
