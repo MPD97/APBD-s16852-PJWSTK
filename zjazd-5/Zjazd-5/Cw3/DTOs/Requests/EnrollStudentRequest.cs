@@ -15,17 +15,19 @@ namespace Cw4.DTOs.Requests
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Musisz podać imię")]
-        [MinLength(2)]
-        [MaxLength(10)]
+        [MinLength(2, ErrorMessage = "Minimalna długośc to 2 znaki")]
+        [MaxLength(10, ErrorMessage = "Maksymalna długośc to 10 znaków")]
         public string FirstName { get; set; }
 
-        [Required]
-        [MinLength(2)]
-        [MaxLength(255)]
+        [Required(ErrorMessage = "Musisz podać nazwisko")]
+        [MinLength(2, ErrorMessage = "Minimalna długośc to 2 znaki")]
+        [MaxLength(255, ErrorMessage = "Maksymalna długośc to 255 znaków")]
         public string LastName { get; set; }
+
+        [Required(ErrorMessage = "Musisz podać datę urodzenia")]
         public DateTime Birthdate { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Musisz podać studia")]
         public string Studies { get; set; }
     }
 }
