@@ -36,7 +36,7 @@ namespace Cw4.Services
 
                 try
                 {
-                    cmd.CommandText = "select IdStudies from studies where name=@name";
+                    cmd.CommandText = "select TOP(1) IdStudies from Studies where Name=@name";
                     cmd.Parameters.AddWithValue("name", request.Studies);
 
                     var dr = cmd.ExecuteReader();
@@ -50,18 +50,18 @@ namespace Cw4.Services
                     }
                     int idStudies = (int)dr["IdStudies"];
 
-                    cmd.CommandText = "select top(1) IdEnrollment from Enrollment where idStudy=@idStudy and semester=1";
+                    cmd.CommandText = "select TOP(1) IdEnrollment from Enrollment where IdStudy=@idStudy and semester=1";
                     cmd.Parameters.AddWithValue("idStudy", idStudies);
-                    int idEnrolment;
                     
+                    int idEnrolment;
                     if (!dr.Read())
                     {
-                        cmd.CommandText = "insert into Enrollment (semester,idStudy) " +
-                                           "values 1, @idStudy; SELECT SCOPE_IDENTITY()";
+                        cmd.CommandText = "insert into Enrollment (Semester, IdStudy, StartDate) " +
+                                           "values 1, @idStudy, @dateNow; SELECT SCOPE_IDENTITY()";
                         cmd.Parameters.AddWithValue("idStudy", idStudies);
-                       
-                        idEnrolment = (int)cmd.ExecuteScalar();
+                        cmd.Parameters.AddWithValue("idStudy", DateTime.Now);
 
+                        idEnrolment = (int)cmd.ExecuteScalar();
                     }
                     else
                     {
