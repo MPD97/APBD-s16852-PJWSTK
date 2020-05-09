@@ -44,14 +44,26 @@ namespace Cw4.Services
                     {
                         tran.Rollback();
                         
-                        result.Message = "Studia nie istnieja";
+                        result.Message = "Studia nie istnieją";
                         result.Success = false;
                         return result;
                     }
-                    int idstudies = (int)dr["IdStudies"];
+                    int idStudies = (int)dr["IdStudies"];
 
-                    com.CommandText = "INSERT INTO Student(IndexNumber, FirstName) VALUES(@Index, @Fname)";
-                    com.Parameters.AddWithValue("index", request.IndexNumber);
+                    com.CommandText = "select top(1) IdEnrollment from Enrollment where idStudy=@idStudy and semester=1";
+                    com.Parameters.AddWithValue("idStudy", idStudies);
+                    if (!dr.Read())
+                    {
+                        tran.Rollback();
+
+                        result.Message = "Zapis nie istnieje";
+                        result.Success = false;
+                        return result;
+                    }
+
+                    int idEnrolment = (int)dr["IdEnrollment"];
+                    //com.CommandText = "INSERT INTO Student(IndexNumber, FirstName) VALUES(@Index, @Fname)";
+                    //com.Parameters.AddWithValue("index", request.IndexNumber);
 
                     com.ExecuteNonQuery();
 
