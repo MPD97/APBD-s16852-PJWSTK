@@ -2,6 +2,7 @@
 using Cw4.DTOs.Requests;
 using Cw4.DTOs.Responses;
 using System;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace Cw4.Services
@@ -140,7 +141,6 @@ namespace Cw4.Services
                 cmd.Connection = con;
 
                 con.Open();
-                var tran = con.BeginTransaction();
 
                 try
                 {
@@ -153,17 +153,27 @@ namespace Cw4.Services
                     if (!dr.Read())
                     {
                         dr.Close();
+
                         result.Message = "Taki enrollment nie istnieje";
                         result.Success = false;
+                  
                         return result;
                     }
                     dr.Close();
                     cmd.Parameters.Clear();
 
+                    cmd.CommandText = "PromoteStudents1";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@studiesName", model.Studies);
+                    cmd.Parameters.AddWithValue("@oldSemester", model.Semester);
+                    
+                    cmd.ExecuteNonQuery();
 
-
-                 
-                    tran.Commit();
+                    result.Model = new EnrollPromoteResponse
+                    {
+                        Semester = model.Semester + 1,
+                        Studies = model.Studies
+                    };
                 }
                 catch (SqlException exc)
                 {
@@ -171,7 +181,6 @@ namespace Cw4.Services
 
                     result.Message = "Błąd wewnętrzny.";
                     result.Success = false;
-                    tran.Rollback();
                 }
             }
             return result;

@@ -40,7 +40,7 @@ namespace Cw4.Controllers
                 return BadRequest(result.Message);
             }
 
-            return StatusCode(201, result.Response);
+            return StatusCode(201, result.Model);
         }
 
         [HttpPost("promotions")]
@@ -53,13 +53,13 @@ namespace Cw4.Controllers
                 return BadRequest(allErrors);
             }
 
-            var result = _service.EnrollStudent(request);
+            var result = _service.PromoteStudents(request);
             if (result.Success == false)
             {
                 return BadRequest(result.Message);
             }
 
-            return StatusCode(201, result.Response);
+            return StatusCode(201, result.Model);
         }
     }
 }

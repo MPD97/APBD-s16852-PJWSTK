@@ -7,5 +7,7 @@ namespace Cw4.DTOs.Responses
 {
     public class EnrollPromoteResponse
     {
+        public string Studies { get; set; }
+        public int Semester { get; set; }
     }
 }
