@@ -7,7 +7,7 @@ namespace Cw4.Services
 {
     public interface IStudentDbService
     {
-        void EnrollStudent(EnrollStudentRequest request);
-        void PromoteStudents(int semester, string studies);
+        ServiceResult EnrollStudent(EnrollStudentRequest request);
+        ServiceResult PromoteStudents(int semester, string studies);
     }
 }
