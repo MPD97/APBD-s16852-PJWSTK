@@ -1,11 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Cw3.DAL;
 using Cw4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -31,7 +33,7 @@ namespace Cw3
             services.AddControllers();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IStudentDbService dbService)
         {
             if (env.IsDevelopment())
             {
@@ -39,6 +41,28 @@ namespace Cw3
             }
 
             app.UseHttpsRedirection();
+
+
+            app.Use(async (context, next) =>
+            {
+                context.Request.Headers.TryGetValue("Index", out var index);
+
+                if (string.IsNullOrWhiteSpace(index) || string.IsNullOrEmpty(index))
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    await context.Response.WriteAsync("Nie podano indeksu");
+                    return;
+                }
+
+                if (dbService.StudentExist(index) == false)
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    await context.Response.WriteAsync("Brak dostępu.");
+                    return;
+                }
+
+                await next();
+            });
 
             app.UseRouting();
 
