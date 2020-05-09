@@ -14,19 +14,6 @@ namespace Cw3.Controllers
     [ApiController]
     public class StudentsController : ControllerBase
     {
-        private readonly IDbService _dbService;
-
-        public StudentsController(IDbService dbService)
-        {
-            _dbService = dbService;
-        }
-
-        //[HttpGet]
-        //public IActionResult GetStudent(string orderBy)
-        //{
-        //    return Ok(_dbService.GetStudents());
-        //}
-
         [HttpGet]
         public IActionResult GetStudent()
         {

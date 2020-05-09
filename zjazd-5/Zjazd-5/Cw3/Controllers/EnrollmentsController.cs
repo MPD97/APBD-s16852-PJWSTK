@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cw3.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cw4.Controllers
 {
-    public class EnrollmentsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class EnrollmentsController : ControllerBase
     {
-        public IActionResult Index()
+        [HttpPost]
+        public IActionResult CreateStudent(Student student)
         {
-            return View();
+            student.IndexNumber = $"s{new Random().Next(1, 20000)}";
+            return Ok(student);
         }
     }
 }
