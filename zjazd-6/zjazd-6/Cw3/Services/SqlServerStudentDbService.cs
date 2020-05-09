@@ -126,6 +126,37 @@ namespace Cw4.Services
             return result;
         }
 
+        public bool StudentExist(string index)
+        {
+
+            using (var con = new SqlConnection(ConnectionString))
+            using (var cmd = new SqlCommand())
+            {
+                cmd.Connection = con;
+                con.Open();
+
+                try
+                {
+                    cmd.CommandText = "select TOP(1) IndexNumber from Student where IndexNumber=@index";
+                    cmd.Parameters.AddWithValue("index", index);
+
+                    var dr = cmd.ExecuteReader();
+                    if (!dr.Read())
+                    {
+                        return false;
+                    }
+                    dr.Close();
+                    cmd.Parameters.Clear();
+
+                    return true;
+                }
+                catch (SqlException exc)
+                {
+                    Console.WriteLine(exc.Message);
+                }
+            }
+            return false;   
+        }
 
         public ServicePromoteResult PromoteStudents(EnrollPromoteRequest model)
         {
