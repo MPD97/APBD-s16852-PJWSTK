@@ -16,14 +16,15 @@ namespace Cw4.Middlewares
         }
         public async Task InvokeAsync(HttpContext httpContext)
         {
-                string httpQuery = httpContext.Request.QueryString.Value;
-
+            StreamReader sr = new StreamReader(httpContext.Request.Body);
                 string log = 
                 $"Metoda: {httpContext.Request.Method},\r\n" +
                 $"Ścieżka: {httpContext.Request.Path.Value},\r\n" +
-                $"Ciało: {await new StreamReader(httpContext.Request.Body).ReadToEndAsync()},\r\n" +
+                $"Ciało: {await sr.ReadToEndAsync()},\r\n" +
                 $"Query: {httpContext.Request.QueryString.Value} \r\n";
                 await File.AppendAllTextAsync("requestsLog.txt", log);
+            sr.Dispose();
+
             await _next(httpContext);
         }
 
