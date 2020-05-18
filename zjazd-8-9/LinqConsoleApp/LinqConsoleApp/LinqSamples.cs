@@ -217,7 +217,6 @@ namespace LinqConsoleApp
         public void Przyklad2()
         {
             var lambdaResult = Emps.Where(emp => emp.Job == "Backend programmer" && emp.Salary > 1000).OrderByDescending(emp => emp.Ename).ToList();
-
         }
 
         /// <summary>
@@ -225,7 +224,7 @@ namespace LinqConsoleApp
         /// </summary>
         public void Przyklad3()
         {
-          
+            var lambdaResult = Emps.Max(emp => emp.Salary);
         }
 
         /// <summary>
@@ -233,7 +232,7 @@ namespace LinqConsoleApp
         /// </summary>
         public void Przyklad4()
         {
-
+            var lambdaResult = Emps.Where(emp => emp.Salary == Emps.Max(e => e.Salary));
         }
 
         /// <summary>
