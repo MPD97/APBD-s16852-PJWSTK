@@ -207,6 +207,8 @@ namespace LinqConsoleApp
 
 
             //2. Lambda and Extension methods
+
+            var lambdaResult = Emps.Where(emp => emp.Job == "Backend programmer").ToList();
         }
 
         /// <summary>
@@ -214,7 +216,7 @@ namespace LinqConsoleApp
         /// </summary>
         public void Przyklad2()
         {
-            
+            var lambdaResult = Emps.Where(emp => emp.Job == "Backend programmer" && emp.Salary > 1000).OrderByDescending(emp => emp.Ename).ToList();
 
         }
 
