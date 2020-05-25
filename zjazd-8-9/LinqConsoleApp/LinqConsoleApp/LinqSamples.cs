@@ -240,7 +240,11 @@ namespace LinqConsoleApp
         /// </summary>
         public void Przyklad5()
         {
-
+            var lambdaResult = Emps.Select(emp => new
+            {
+                Nazwisko = emp.Ename,
+                Praca = emp.Job,
+            });
         }
 
         /// <summary>
@@ -248,17 +252,33 @@ namespace LinqConsoleApp
         /// INNER JOIN Depts ON Emps.Deptno=Depts.Deptno
         /// Rezultat: Złączenie kolekcji Emps i Depts.
         /// </summary>
-        public void Przyklad6()
+        public IEnumerable<object> Przyklad6()
         {
-
+            var lambdaResult = Emps.Join(Depts, emp => emp.Deptno,
+                dept => dept.Deptno,
+                (emp, dept) => new
+                {
+                    Ename = emp.Ename,
+                    Job = emp.Job,
+                    Dname = dept.Dname
+                }
+            );
+            return lambdaResult;
         }
 
         /// <summary>
         /// SELECT Job AS Praca, COUNT(1) LiczbaPracownikow FROM Emps GROUP BY Job;
         /// </summary>
-        public void Przyklad7()
+        public IEnumerable<object> Przyklad7()
         {
-
+            var lambdaResult = Emps.GroupBy(
+                emp => emp.Job,
+                (key, g) => new
+                {
+                    Praca = key,
+                    LiczbaPracownikow = g.Count()
+                });
+            return lambdaResult;
         }
 
         /// <summary>
