@@ -296,10 +296,10 @@ namespace LinqConsoleApp
         /// SELECT TOP 1 * FROM Emp WHERE Job="Frontend programmer"
         /// ORDER BY HireDate DESC;
         /// </summary>
-        public IEnumerable<object> Przyklad9()
+        public Emp Przyklad9()
         {
             var result = Emps.Where(emp => emp.Job == "Frontend Programmer")
-                .OrderByDescending(emp => emp.HireDate).Take(1);
+                .OrderByDescending(emp => emp.HireDate).First();
 
             return result;
         }
