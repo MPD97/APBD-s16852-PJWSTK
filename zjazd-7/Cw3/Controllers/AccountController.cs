@@ -35,6 +35,7 @@ namespace Cw4.Controllers
             string refreshToken = Guid.NewGuid().ToString();
             Service.SaveRefreshToken(refreshToken, request);
 
+
             var claims = new[] {
                 new Claim(ClaimTypes.NameIdentifier, request.index),
                 new Claim(ClaimTypes.Role, "employee")
@@ -55,7 +56,40 @@ namespace Cw4.Controllers
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
-                refreshToken = Guid.NewGuid()
+                refreshToken
+            });
+        }
+        [HttpPost("viaRefreshToken")]
+        public IActionResult RefreshToken(String rToken)
+        {
+            var index = Service.LoginViaRefreshToken(rToken);
+            if (index == null)
+            {
+                return BadRequest("Nieprawidłowy refresh token.");
+            }
+            
+
+            var claims = new[] {
+                new Claim(ClaimTypes.NameIdentifier, index),
+                new Claim(ClaimTypes.Role, "employee")
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken
+            (
+                issuer: "Gakko",
+                audience: "Students",
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(10),
+                signingCredentials: creds
+            );
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                refreshToken = rToken
             });
         }
     }

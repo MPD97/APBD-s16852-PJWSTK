@@ -271,9 +271,30 @@ namespace Cw4.Services
             }
         }
 
-        public bool LoginViaRefreshToken(string refreshToken)
+        public string LoginViaRefreshToken(string refreshToken)
         {
-            throw new NotImplementedException();
+            using (var con = new SqlConnection(ConnectionString))
+            using (var cmd = new SqlCommand())
+            {
+                cmd.Connection = con;
+
+                con.Open();
+
+                cmd.CommandText = "SELECT TOP(1) IndexNumber from Student where RefreshToken=@rToken";
+                cmd.Parameters.AddWithValue("rToken", refreshToken);
+
+                var dr = cmd.ExecuteReader();
+                if (!dr.Read())
+                {
+                    return null;
+                }
+                var result = dr["IndexNumber"].ToString();
+
+                dr.Close();
+                cmd.Parameters.Clear();
+
+                return result;
+            }
         }
     }
 }

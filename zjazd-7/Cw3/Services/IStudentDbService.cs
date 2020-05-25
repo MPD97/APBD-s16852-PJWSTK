@@ -14,7 +14,7 @@ namespace Cw4.Services
 
         bool LoginStudent(LoginModel model);
         void SaveRefreshToken(string refreshToken, LoginModel model);
-        bool LoginViaRefreshToken(string refreshToken);
+        string LoginViaRefreshToken(string refreshToken);
 
 
         bool StudentExist(string index);
