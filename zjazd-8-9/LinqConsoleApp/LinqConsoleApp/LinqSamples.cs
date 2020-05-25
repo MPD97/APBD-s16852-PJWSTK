@@ -309,9 +309,18 @@ namespace LinqConsoleApp
         /// UNION
         /// SELECT "Brak wartości", null, null;
         /// </summary>
-        public void Przyklad10Button_Click()
+        public IEnumerable<object> Przyklad10Button_Click()
         {
+            Emp select = new Emp { Ename = "Brak wartości", Job = null, HireDate = null };
+            var selectList = new List<Emp> { select };
 
+            var result = Emps.Union(selectList).Select(emp => new
+            {
+                Ename = emp.Ename,
+                Job = emp.Job,
+                Hiredate = emp.HireDate
+            });
+            return result;
         }
 
         //Znajdź pracownika z najwyższą pensją wykorzystując metodę Aggregate()
