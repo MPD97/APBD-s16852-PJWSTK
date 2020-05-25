@@ -60,14 +60,13 @@ namespace Cw4.Controllers
             });
         }
         [HttpPost("viaRefreshToken")]
-        public IActionResult RefreshToken(String rToken)
+        public IActionResult RefreshToken(string rToken)
         {
             var index = Service.LoginViaRefreshToken(rToken);
             if (index == null)
             {
                 return BadRequest("Nieprawidłowy refresh token.");
             }
-            
 
             var claims = new[] {
                 new Claim(ClaimTypes.NameIdentifier, index),
