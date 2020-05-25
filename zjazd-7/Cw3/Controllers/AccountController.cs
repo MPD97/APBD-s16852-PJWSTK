@@ -32,6 +32,8 @@ namespace Cw4.Controllers
             {
                 return BadRequest("Nieprawidłowy login, lub hasło");
             }
+            string refreshToken = Guid.NewGuid().ToString();
+            Service.SaveRefreshToken(refreshToken, request);
 
             var claims = new[] {
                 new Claim(ClaimTypes.NameIdentifier, request.index),

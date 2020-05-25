@@ -13,7 +13,7 @@ namespace Cw4.Services
         ServicePromoteResult PromoteStudents(EnrollPromoteRequest model);
 
         bool LoginStudent(LoginModel model);
-        void SaveRefreshToken(string refreshToken);
+        void SaveRefreshToken(string refreshToken, LoginModel model);
         bool LoginViaRefreshToken(string refreshToken);
 
 

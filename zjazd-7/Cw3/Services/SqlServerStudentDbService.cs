@@ -156,7 +156,7 @@ namespace Cw4.Services
                     Console.WriteLine(exc.Message);
                 }
             }
-            return false;   
+            return false;
         }
 
         public ServicePromoteResult PromoteStudents(EnrollPromoteRequest model)
@@ -188,7 +188,7 @@ namespace Cw4.Services
 
                         result.Message = "Taki enrollment nie istnieje";
                         result.Success = false;
-                  
+
                         return result;
                     }
                     dr.Close();
@@ -198,7 +198,7 @@ namespace Cw4.Services
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@studiesName", model.Studies);
                     cmd.Parameters.AddWithValue("@oldSemester", model.Semester);
-                    
+
                     cmd.ExecuteNonQuery();
 
                     result.Model = new EnrollPromoteResponse
@@ -221,8 +221,6 @@ namespace Cw4.Services
 
         bool IStudentDbService.LoginStudent(LoginModel model)
         {
-            JWTModel result = new JWTModel();
-
             using (var con = new SqlConnection(ConnectionString))
             using (var cmd = new SqlCommand())
             {
@@ -254,9 +252,23 @@ namespace Cw4.Services
             }
         }
 
-        public void SaveRefreshToken(string refreshToken)
+        public void SaveRefreshToken(string refreshToken, LoginModel model)
         {
-            throw new NotImplementedException();
+            using (var con = new SqlConnection(ConnectionString))
+            using (var cmd = new SqlCommand())
+            {
+                cmd.Connection = con;
+
+                con.Open();
+
+                cmd.CommandText = "INSERT INTO Student (RefreshToken) Values(@rToken) where IndexNumber=@index and password=@password";
+                cmd.Parameters.AddWithValue("rToken", refreshToken);
+                cmd.Parameters.AddWithValue("index", model.index);
+                cmd.Parameters.AddWithValue("password", model.Password);
+
+                var dr = cmd.ExecuteNonQuery();
+                cmd.Parameters.Clear();
+            }
         }
 
         public bool LoginViaRefreshToken(string refreshToken)
