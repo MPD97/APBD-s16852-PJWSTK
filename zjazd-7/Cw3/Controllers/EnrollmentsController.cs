@@ -8,6 +8,7 @@ using Cw3.Models;
 using Cw4.DTOs.Requests;
 using Cw4.DTOs.Responses;
 using Cw4.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -25,6 +26,7 @@ namespace Cw4.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "employee")]
         public IActionResult EnrollStudent(EnrollStudentRequest request)
         {
             if (ModelState.IsValid == false)
@@ -44,6 +46,7 @@ namespace Cw4.Controllers
         }
 
         [HttpPost("promotions")]
+        [Authorize(Roles = "employee")]
         public IActionResult EnrollStudent(EnrollPromoteRequest request)
         {
             if (ModelState.IsValid == false)

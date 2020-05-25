@@ -1,4 +1,5 @@
 ﻿using Cw3.Models;
+using Cw4.DTOs;
 using Cw4.DTOs.Requests;
 using Cw4.DTOs.Responses;
 using System;
@@ -215,6 +216,47 @@ namespace Cw4.Services
                 }
             }
             return result;
+        }
+
+
+        bool IStudentDbService.LoginStudent(LoginModel model, )
+        {
+            JWTModel result = new JWTModel();
+
+            using (var con = new SqlConnection(ConnectionString))
+            using (var cmd = new SqlCommand())
+            {
+                cmd.Connection = con;
+
+                con.Open();
+
+                try
+                {
+                    cmd.CommandText = "select TOP(1) IndexNumber from Student where IndexNumber=@index and password=@password";
+                    cmd.Parameters.AddWithValue("index", model.index);
+                    cmd.Parameters.AddWithValue("password", model.Password);
+
+                    var dr = cmd.ExecuteReader();
+                    if (!dr.Read())
+                    {
+                        return false;
+                    }
+                    dr.Close();
+                    cmd.Parameters.Clear();
+
+                    return true;
+                }
+                catch (SqlException exc)
+                {
+                    Console.WriteLine(exc.Message);
+                    return false;
+                }
+            }
+        }
+
+        public string RefreshToken(LoginModel model, out bool success)
+        {
+            throw new NotImplementedException();
         }
     }
 }
