@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
-using Cw3.DAL;
 using Cw4.Middlewares;
 using Cw4.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Cw3
 {
@@ -31,6 +33,21 @@ namespace Cw3
         {
             services.AddTransient<IStudentDbService, SqlServerStudentDbService>();
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidIssuer = "Gakko",
+                            ValidAudience = "Students",
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))
+                        };
+                    });
+
+
             services.AddControllers();
         }
 
@@ -40,34 +57,10 @@ namespace Cw3
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
-
-            app.UseMiddleware<LoggingMiddleware>();
-
-            app.Use(async (context, next) =>
-            {
-                context.Request.Headers.TryGetValue("Index", out var index);
-
-                if (string.IsNullOrWhiteSpace(index) || string.IsNullOrEmpty(index))
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    await context.Response.WriteAsync("Nie podano indeksu");
-                    return;
-                }
-
-                if (dbService.StudentExist(index) == false)
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    await context.Response.WriteAsync("Brak dostępu.");
-                    return;
-                }
-
-                await next();
-            });
-
+            
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
