@@ -12,6 +12,7 @@ namespace LinqConsoleApp
         public LinqSamples()
         {
             LoadData();
+            Przyklad12();
         }
 
         public void LoadData()
@@ -188,63 +189,50 @@ namespace LinqConsoleApp
         /// <summary>
         /// SELECT * FROM Emps WHERE Job = "Backend programmer";
         /// </summary>
-        public void Przyklad1()
+        public IEnumerable<object> Przyklad1()
         {
-            //var res = new List<Emp>();
-            //foreach(var emp in Emps)
-            //{
-            //    if (emp.Job == "Backend programmer") res.Add(emp);
-            //}
-
-            //1. Query syntax (SQL)
-            var res = from emp in Emps
-                      where emp.Job == "Backend programmer"
-                      select new
-                      {
-                          Nazwisko = emp.Ename,
-                          Zawod = emp.Job
-                      };
-
-
-            //2. Lambda and Extension methods
-
-            var lambdaResult = Emps.Where(emp => emp.Job == "Backend programmer").ToList();
+            var result = Emps.Where(emp => emp.Job == "Backend programmer").ToList();
+            return result;
         }
 
         /// <summary>
         /// SELECT * FROM Emps Job = "Frontend programmer" AND Salary>1000 ORDER BY Ename DESC;
         /// </summary>
-        public void Przyklad2()
+        public IEnumerable<object> Przyklad2()
         {
-            var lambdaResult = Emps.Where(emp => emp.Job == "Backend programmer" && emp.Salary > 1000).OrderByDescending(emp => emp.Ename).ToList();
+            var result = Emps.Where(emp => emp.Job == "Backend programmer" && emp.Salary > 1000).OrderByDescending(emp => emp.Ename).ToList();
+            return result;
         }
 
         /// <summary>
         /// SELECT MAX(Salary) FROM Emps;
         /// </summary>
-        public void Przyklad3()
+        public int Przyklad3()
         {
-            var lambdaResult = Emps.Max(emp => emp.Salary);
+            var result = Emps.Max(emp => emp.Salary);
+            return result;
         }
 
         /// <summary>
         /// SELECT * FROM Emps WHERE Salary=(SELECT MAX(Salary) FROM Emps);
         /// </summary>
-        public void Przyklad4()
+        public IEnumerable<object> Przyklad4()
         {
-            var lambdaResult = Emps.Where(emp => emp.Salary == Emps.Max(e => e.Salary));
+            var result = Emps.Where(emp => emp.Salary == Emps.Max(e => e.Salary)).ToList();
+            return result;
         }
 
         /// <summary>
         /// SELECT ename AS Nazwisko, job AS Praca FROM Emps;
         /// </summary>
-        public void Przyklad5()
+        public IEnumerable<object> Przyklad5()
         {
-            var lambdaResult = Emps.Select(emp => new
+            var result = Emps.Select(emp => new
             {
                 Nazwisko = emp.Ename,
                 Praca = emp.Job,
-            });
+            }).ToList();
+            return result;
         }
 
         /// <summary>
@@ -262,7 +250,7 @@ namespace LinqConsoleApp
                     Job = emp.Job,
                     Dname = dept.Dname
                 }
-            );
+            ).ToList();
             return lambdaResult;
         }
 
@@ -277,7 +265,7 @@ namespace LinqConsoleApp
                 {
                     Praca = key,
                     LiczbaPracownikow = g.Count()
-                });
+                }).ToList();
             return lambdaResult;
         }
 
@@ -319,7 +307,7 @@ namespace LinqConsoleApp
                 Ename = emp.Ename,
                 Job = emp.Job,
                 Hiredate = emp.HireDate
-            });
+            }).ToList();
             return result;
         }
 
@@ -333,9 +321,21 @@ namespace LinqConsoleApp
 
         //Z pomocą języka LINQ i metody SelectMany wykonaj złączenie
         //typu CROSS JOIN
-        public void Przyklad12()
+        public IEnumerable<object> Przyklad12()
         {
-
+            var result = Emps.SelectMany(emp => Depts, (emp, dept) => new 
+            {
+                emp.Empno,
+                emp.Ename,
+                emp.HireDate,
+                emp.Job,
+                emp.Mgr,
+                emp.Salary,
+                emp.Deptno,
+                dept.Dname,
+                dept.Loc,
+            }).ToList();
+            return result;
         }
     }
 }
