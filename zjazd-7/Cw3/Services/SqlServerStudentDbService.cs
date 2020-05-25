@@ -219,7 +219,7 @@ namespace Cw4.Services
         }
 
 
-        bool IStudentDbService.LoginStudent(LoginModel model, )
+        bool IStudentDbService.LoginStudent(LoginModel model)
         {
             JWTModel result = new JWTModel();
 
@@ -254,7 +254,12 @@ namespace Cw4.Services
             }
         }
 
-        public string RefreshToken(LoginModel model, out bool success)
+        public void SaveRefreshToken(string refreshToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool LoginViaRefreshToken(string refreshToken)
         {
             throw new NotImplementedException();
         }

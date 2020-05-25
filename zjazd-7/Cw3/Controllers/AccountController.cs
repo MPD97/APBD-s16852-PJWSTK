@@ -27,19 +27,15 @@ namespace Cw4.Controllers
         [HttpPost]
         public IActionResult Login(LoginModel request)
         {
-
             var success = Service.LoginStudent(request);
             if (success == false)
             {
                 return BadRequest("Nieprawidłowy login, lub hasło");
             }
 
-            var claims = new[]
-{
-                new Claim(ClaimTypes.NameIdentifier, "1"),
-                new Claim(ClaimTypes.Name, "jan123"),
-                new Claim(ClaimTypes.Role, "admin"),
-                new Claim(ClaimTypes.Role, "student")
+            var claims = new[] {
+                new Claim(ClaimTypes.NameIdentifier, request.index),
+                new Claim(ClaimTypes.Role, "employee")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]));
