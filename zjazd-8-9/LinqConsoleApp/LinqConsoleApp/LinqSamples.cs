@@ -285,8 +285,10 @@ namespace LinqConsoleApp
         /// Zwróć wartość "true" jeśli choć jeden
         /// z elementów kolekcji pracuje jako "Backend programmer".
         /// </summary>
-        public void Przyklad8()
+        public bool Przyklad8()
         {
+            var result = Emps.Any(emp => emp.Job == "Backend programmer");
+            return result;
 
         }
 
@@ -294,9 +296,12 @@ namespace LinqConsoleApp
         /// SELECT TOP 1 * FROM Emp WHERE Job="Frontend programmer"
         /// ORDER BY HireDate DESC;
         /// </summary>
-        public void Przyklad9()
+        public IEnumerable<object> Przyklad9()
         {
+            var result = Emps.Where(emp => emp.Job == "Frontend Programmer")
+                .OrderByDescending(emp => emp.HireDate).Take(1);
 
+            return result;
         }
 
         /// <summary>
