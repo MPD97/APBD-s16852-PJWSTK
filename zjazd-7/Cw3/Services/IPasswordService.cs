@@ -36,7 +36,7 @@ namespace Cw4.Services
 
         public bool Validate(string value, string salt, string hash)
         {
-            throw new NotImplementedException();
+            return Create(value, salt) == hash;
         }
     }
 }
