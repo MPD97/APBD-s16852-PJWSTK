@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Cw4.Services
@@ -17,7 +19,14 @@ namespace Cw4.Services
     {
         public string Create(string value, string salt)
         {
-            throw new NotImplementedException();
+            var valueBytes = KeyDerivation.Pbkdf2(
+                password: value,
+                salt: Encoding.UTF8.GetBytes(salt),
+                iterationCount: 10000,
+                prf: KeyDerivationPrf.HMACSHA512,
+                numBytesRequested: 256 / 8);
+
+            return Convert.ToBase64String(valueBytes);
         }
 
         public string CreateSalt()
