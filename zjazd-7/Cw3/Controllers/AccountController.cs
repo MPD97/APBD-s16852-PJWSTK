@@ -17,23 +17,32 @@ namespace Cw4.Controllers
     {
         public IConfiguration Configuration { get; set; }
         public IStudentDbService Service { get; set; }
+        public IPasswordService passwordService { get; set; }
 
-        public AccountController(IConfiguration configuration, IStudentDbService service)
+        public AccountController(IConfiguration configuration, IStudentDbService service, IPasswordService passwordService)
         {
             Configuration = configuration;
             Service = service;
+            this.passwordService = passwordService;
         }
 
         [HttpPost]
         public IActionResult Login(LoginModel request)
         {
-            var success = Service.LoginStudent(request);
-            if (success == false)
+            var dbData = Service.GetHashAndSalt(request.index);
+            if (dbData == null)
             {
-                return BadRequest("Nieprawidłowy login, lub hasło");
+                return BadRequest("Taki użytkownik nie isniteje");
             }
+
+            var result = passwordService.Validate(request.Password, dbData.Salt, dbData.Password);
+            if (result == false)
+            {
+                return BadRequest("Zły login, lub hasło");
+            }
+
             string refreshToken = Guid.NewGuid().ToString();
-            Service.SaveRefreshToken(refreshToken, request);
+            Service.SaveRefreshToken(refreshToken, new LoginSaltModel { index = request.index, Password = dbData.Password, Salt = dbData.Salt});
 
 
             var claims = new[] {

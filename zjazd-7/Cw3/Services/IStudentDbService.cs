@@ -12,10 +12,10 @@ namespace Cw4.Services
         ServiceStudentResult EnrollStudent(EnrollStudentRequest model);
         ServicePromoteResult PromoteStudents(EnrollPromoteRequest model);
 
-        bool LoginStudent(LoginModel model);
-        void SaveRefreshToken(string refreshToken, LoginModel model);
+        bool LoginStudent(LoginSaltModel model);
+        void SaveRefreshToken(string refreshToken, LoginSaltModel model);
         string LoginViaRefreshToken(string refreshToken);
-
+        LoginSaltModel GetHashAndSalt(string index);
 
         bool StudentExist(string index);
     }

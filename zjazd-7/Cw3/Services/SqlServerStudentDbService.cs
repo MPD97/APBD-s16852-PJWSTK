@@ -226,7 +226,7 @@ namespace Cw4.Services
         }
 
 
-        bool IStudentDbService.LoginStudent(LoginModel model)
+        bool IStudentDbService.LoginStudent(LoginSaltModel model)
         {
             using (var con = new SqlConnection(ConnectionString))
             using (var cmd = new SqlCommand())
@@ -237,9 +237,10 @@ namespace Cw4.Services
 
                 try
                 {
-                    cmd.CommandText = "select TOP(1) IndexNumber from Student where IndexNumber=@index and password=@password";
+                    cmd.CommandText = "select TOP(1) IndexNumber from Student where IndexNumber=@index and password=@password and salt=@salt";
                     cmd.Parameters.AddWithValue("index", model.index);
                     cmd.Parameters.AddWithValue("password", model.Password);
+                    cmd.Parameters.AddWithValue("salt", model.Salt);
 
                     var dr = cmd.ExecuteReader();
                     if (!dr.Read())
@@ -259,7 +260,7 @@ namespace Cw4.Services
             }
         }
 
-        public void SaveRefreshToken(string refreshToken, LoginModel model)
+        public void SaveRefreshToken(string refreshToken, LoginSaltModel model)
         {
             using (var con = new SqlConnection(ConnectionString))
             using (var cmd = new SqlCommand())
@@ -268,10 +269,12 @@ namespace Cw4.Services
 
                 con.Open();
 
-                cmd.CommandText = "INSERT INTO Student (RefreshToken) Values(@rToken) where IndexNumber=@index and password=@password";
+                cmd.CommandText = "INSERT INTO Student (RefreshToken) Values(@rToken) where IndexNumber=@index and password=@password and salt=@salt";
                 cmd.Parameters.AddWithValue("rToken", refreshToken);
                 cmd.Parameters.AddWithValue("index", model.index);
                 cmd.Parameters.AddWithValue("password", model.Password);
+                cmd.Parameters.AddWithValue("salt", model.Salt);
+
 
                 var dr = cmd.ExecuteNonQuery();
                 cmd.Parameters.Clear();
@@ -297,6 +300,37 @@ namespace Cw4.Services
                 }
                 var result = dr["IndexNumber"].ToString();
 
+                dr.Close();
+                cmd.Parameters.Clear();
+
+                return result;
+            }
+        }
+
+        public LoginSaltModel GetHashAndSalt(string index)
+        {
+            using (var con = new SqlConnection(ConnectionString))
+            using (var cmd = new SqlCommand())
+            {
+                cmd.Connection = con;
+
+                con.Open();
+
+                cmd.CommandText = "SELECT TOP(1) IndexNumber, Salt, Password from Student where IndexNumber=@index";
+                cmd.Parameters.AddWithValue("index", index);
+
+                var dr = cmd.ExecuteReader();
+                if (!dr.Read())
+                {
+                    return null;
+                }
+                var result = new LoginSaltModel
+                {
+                    index = dr["IndexNumber"].ToString(),
+                    Password = dr["Password"].ToString(),
+                    Salt = dr["Salt"].ToString()
+                };
+             
                 dr.Close();
                 cmd.Parameters.Clear();
 
