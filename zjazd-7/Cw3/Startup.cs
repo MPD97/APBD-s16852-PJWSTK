@@ -32,6 +32,8 @@ namespace Cw3
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IStudentDbService, SqlServerStudentDbService>();
+            services.AddTransient<IPasswordService, PBKDFPasswordService>();
+
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>

@@ -12,6 +12,13 @@ namespace Cw4.Services
     {
         private const string ConnectionString = "Data Source=db-mssql;Initial Catalog=s16852;Integrated Security=True";
 
+        public IPasswordService PasswordService { get; set; }
+
+        public SqlServerStudentDbService(IPasswordService passwordService)
+        {
+            PasswordService = passwordService;
+        }
+
         public ServiceStudentResult EnrollStudent(EnrollStudentRequest model)
         {
             ServiceStudentResult result = new ServiceStudentResult
