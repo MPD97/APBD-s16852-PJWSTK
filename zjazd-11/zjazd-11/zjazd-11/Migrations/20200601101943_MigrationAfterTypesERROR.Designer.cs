@@ -10,8 +10,8 @@ using zjazd_11.Models;
 namespace zjazd_11.Migrations
 {
     [DbContext(typeof(s16852Context))]
-    [Migration("20200601093908_initial-Data")]
-    partial class initialData
+    [Migration("20200601101943_MigrationAfterTypesERROR")]
+    partial class MigrationAfterTypesERROR
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,21 +28,37 @@ namespace zjazd_11.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Email")
-                        .HasColumnType("datetime2")
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
-                    b.Property<decimal>("FirstName")
-                        .HasColumnType("decimal(18,2)")
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
-                    b.Property<decimal>("LastName")
-                        .HasColumnType("decimal(18,2)")
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
                     b.HasKey("DoctorId");
 
                     b.ToTable("Doctors");
+
+                    b.HasData(
+                        new
+                        {
+                            DoctorId = 1,
+                            Email = "m.markowski@gmail.com",
+                            FirstName = "Marek",
+                            LastName = "Markowski"
+                        },
+                        new
+                        {
+                            DoctorId = 2,
+                            Email = "r.Szkoleniowski@gmail.com",
+                            FirstName = "Ryszard",
+                            LastName = "Szkoleniowski"
+                        });
                 });
 
             modelBuilder.Entity("zjazd_11.Models.Medicament", b =>
@@ -67,6 +83,22 @@ namespace zjazd_11.Migrations
                     b.HasKey("MedicamentId");
 
                     b.ToTable("Medicaments");
+
+                    b.HasData(
+                        new
+                        {
+                            MedicamentId = 1,
+                            Description = "Uśmieża ból",
+                            Name = "APAP",
+                            Type = "Środek przeciwbólowy"
+                        },
+                        new
+                        {
+                            MedicamentId = 2,
+                            Description = "Uzupełnia niedobór witaminy C",
+                            Name = "Witamina-C",
+                            Type = "Suplement diety"
+                        });
                 });
 
             modelBuilder.Entity("zjazd_11.Models.Patient", b =>
@@ -79,17 +111,33 @@ namespace zjazd_11.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("FirstName")
-                        .HasColumnType("decimal(18,2)")
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
-                    b.Property<decimal>("LastName")
-                        .HasColumnType("decimal(18,2)")
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
                     b.HasKey("PatientId");
 
                     b.ToTable("Patients");
+
+                    b.HasData(
+                        new
+                        {
+                            PatientId = 1,
+                            BirthDate = new DateTime(2020, 6, 1, 12, 19, 43, 80, DateTimeKind.Local).AddTicks(731),
+                            FirstName = "Adam",
+                            LastName = "Przykładowski"
+                        },
+                        new
+                        {
+                            PatientId = 2,
+                            BirthDate = new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(648),
+                            FirstName = "Kamil",
+                            LastName = "Nazwiskowski"
+                        });
                 });
 
             modelBuilder.Entity("zjazd_11.Models.Prescription", b =>
@@ -99,14 +147,14 @@ namespace zjazd_11.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Date")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("DueDate")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
@@ -118,6 +166,24 @@ namespace zjazd_11.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Prescriptions");
+
+                    b.HasData(
+                        new
+                        {
+                            PrescriptionId = 1,
+                            Date = new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(3879),
+                            DoctorId = 1,
+                            DueDate = new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(4434),
+                            PatientId = 1
+                        },
+                        new
+                        {
+                            PrescriptionId = 2,
+                            Date = new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(5764),
+                            DoctorId = 1,
+                            DueDate = new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(5790),
+                            PatientId = 2
+                        });
                 });
 
             modelBuilder.Entity("zjazd_11.Models.PrescriptionMedicament", b =>
@@ -140,6 +206,22 @@ namespace zjazd_11.Migrations
                     b.HasIndex("MedicamentId");
 
                     b.ToTable("PrescriptionMedicaments");
+
+                    b.HasData(
+                        new
+                        {
+                            PrescriptionId = 1,
+                            MedicamentId = 1,
+                            Details = "2 razy dziennie co 6 godzin",
+                            Dose = 1
+                        },
+                        new
+                        {
+                            PrescriptionId = 2,
+                            MedicamentId = 2,
+                            Details = "na noc 2 tabletki",
+                            Dose = 2
+                        });
                 });
 
             modelBuilder.Entity("zjazd_11.Models.Prescription", b =>

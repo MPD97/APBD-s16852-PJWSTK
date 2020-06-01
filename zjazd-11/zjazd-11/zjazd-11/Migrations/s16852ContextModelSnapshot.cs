@@ -125,14 +125,14 @@ namespace zjazd_11.Migrations
                         new
                         {
                             PatientId = 1,
-                            BirthDate = new DateTime(2020, 6, 1, 12, 16, 26, 814, DateTimeKind.Local).AddTicks(1551),
+                            BirthDate = new DateTime(2020, 6, 1, 12, 19, 43, 80, DateTimeKind.Local).AddTicks(731),
                             FirstName = "Adam",
                             LastName = "Przykładowski"
                         },
                         new
                         {
                             PatientId = 2,
-                            BirthDate = new DateTime(2020, 6, 1, 12, 16, 26, 817, DateTimeKind.Local).AddTicks(2744),
+                            BirthDate = new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(648),
                             FirstName = "Kamil",
                             LastName = "Nazwiskowski"
                         });
@@ -169,17 +169,17 @@ namespace zjazd_11.Migrations
                         new
                         {
                             PrescriptionId = 1,
-                            Date = new DateTime(2020, 6, 1, 12, 16, 26, 817, DateTimeKind.Local).AddTicks(5597),
+                            Date = new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(3879),
                             DoctorId = 1,
-                            DueDate = new DateTime(2020, 6, 1, 12, 16, 26, 817, DateTimeKind.Local).AddTicks(5984),
+                            DueDate = new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(4434),
                             PatientId = 1
                         },
                         new
                         {
                             PrescriptionId = 2,
-                            Date = new DateTime(2020, 6, 1, 12, 16, 26, 817, DateTimeKind.Local).AddTicks(7158),
+                            Date = new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(5764),
                             DoctorId = 1,
-                            DueDate = new DateTime(2020, 6, 1, 12, 16, 26, 817, DateTimeKind.Local).AddTicks(7182),
+                            DueDate = new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(5790),
                             PatientId = 2
                         });
                 });

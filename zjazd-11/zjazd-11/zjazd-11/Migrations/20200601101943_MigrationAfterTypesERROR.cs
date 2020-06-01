@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace zjazd_11.Migrations
 {
-    public partial class initialData : Migration
+    public partial class MigrationAfterTypesERROR : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,9 +13,9 @@ namespace zjazd_11.Migrations
                 {
                     DoctorId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<decimal>(maxLength: 100, nullable: false),
-                    LastName = table.Column<decimal>(maxLength: 100, nullable: false),
-                    Email = table.Column<DateTime>(maxLength: 100, nullable: false)
+                    FirstName = table.Column<string>(maxLength: 100, nullable: true),
+                    LastName = table.Column<string>(maxLength: 100, nullable: true),
+                    Email = table.Column<string>(maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -43,8 +43,8 @@ namespace zjazd_11.Migrations
                 {
                     PatientId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<decimal>(maxLength: 100, nullable: false),
-                    LastName = table.Column<decimal>(maxLength: 100, nullable: false),
+                    FirstName = table.Column<string>(maxLength: 100, nullable: true),
+                    LastName = table.Column<string>(maxLength: 100, nullable: true),
                     BirthDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -58,8 +58,8 @@ namespace zjazd_11.Migrations
                 {
                     PrescriptionId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<decimal>(nullable: false),
-                    DueDate = table.Column<decimal>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: false),
+                    DueDate = table.Column<DateTime>(nullable: false),
                     PatientId = table.Column<int>(nullable: false),
                     DoctorId = table.Column<int>(nullable: false)
                 },
@@ -105,6 +105,53 @@ namespace zjazd_11.Migrations
                         principalColumn: "PrescriptionId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Doctors",
+                columns: new[] { "DoctorId", "Email", "FirstName", "LastName" },
+                values: new object[,]
+                {
+                    { 1, "m.markowski@gmail.com", "Marek", "Markowski" },
+                    { 2, "r.Szkoleniowski@gmail.com", "Ryszard", "Szkoleniowski" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Medicaments",
+                columns: new[] { "MedicamentId", "Description", "Name", "Type" },
+                values: new object[,]
+                {
+                    { 1, "Uśmieża ból", "APAP", "Środek przeciwbólowy" },
+                    { 2, "Uzupełnia niedobór witaminy C", "Witamina-C", "Suplement diety" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Patients",
+                columns: new[] { "PatientId", "BirthDate", "FirstName", "LastName" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2020, 6, 1, 12, 19, 43, 80, DateTimeKind.Local).AddTicks(731), "Adam", "Przykładowski" },
+                    { 2, new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(648), "Kamil", "Nazwiskowski" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Prescriptions",
+                columns: new[] { "PrescriptionId", "Date", "DoctorId", "DueDate", "PatientId" },
+                values: new object[] { 1, new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(3879), 1, new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(4434), 1 });
+
+            migrationBuilder.InsertData(
+                table: "Prescriptions",
+                columns: new[] { "PrescriptionId", "Date", "DoctorId", "DueDate", "PatientId" },
+                values: new object[] { 2, new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(5764), 1, new DateTime(2020, 6, 1, 12, 19, 43, 83, DateTimeKind.Local).AddTicks(5790), 2 });
+
+            migrationBuilder.InsertData(
+                table: "PrescriptionMedicaments",
+                columns: new[] { "PrescriptionId", "MedicamentId", "Details", "Dose" },
+                values: new object[] { 1, 1, "2 razy dziennie co 6 godzin", 1 });
+
+            migrationBuilder.InsertData(
+                table: "PrescriptionMedicaments",
+                columns: new[] { "PrescriptionId", "MedicamentId", "Details", "Dose" },
+                values: new object[] { 2, 2, "na noc 2 tabletki", 2 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_PrescriptionMedicaments_MedicamentId",
