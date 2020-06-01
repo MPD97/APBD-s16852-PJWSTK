@@ -4,8 +4,10 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Cw3.Models;
+using Cw4;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cw3.Controllers
 {
@@ -13,45 +15,18 @@ namespace Cw3.Controllers
     [ApiController]
     public class StudentsController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetStudent()
+        public s16852Context Context { get; set; }
+
+        public StudentsController(s16852Context context)
         {
-            List<Student> students = new List<Student>();
+            Context = context;
+        }
 
-            using (var connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s16852;Integrated Security=True"))
-            {
-                using (SqlCommand command = new SqlCommand())
-                {
 
-                    command.Connection = connection;
-                    command.CommandText = @"SELECT [FirstName]
-                                                  ,[LastName]
-                                                  ,[BirthDate]
-	                                              ,[Name]
-	                                              ,[Semester]
-                                              FROM Student
-                                              INNER JOIN Enrollment
-                                              ON Student.IdEnrollment = Enrollment.IdEnrollment
-                                              Inner Join Studies
-                                              ON Enrollment.IdStudy = Studies.IdStudy;";
-
-                    connection.Open();
-                    var dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        Student student = new Student();
-
-                        student.FirstName = dataReader["FirstName"].ToString();
-                        student.LastName = dataReader["LastName"].ToString();
-                        student.BirthDate = DateTime.Parse(dataReader["BirthDate"].ToString());
-                        student.StudiesName = dataReader["Name"].ToString();
-                        student.SemestrNumber = int.Parse(dataReader["Semester"].ToString());
-
-                        students.Add(student);
-                    }
-                }
-            }
-            return Ok(students);
+        [HttpGet]
+        public async Task<IActionResult> GetStudent()
+        {
+            return Ok(Context.Student.ToArrayAsync());
         }
         [HttpGet("{indexNumber}")]
         public IActionResult GetStudent(string indexNumber)
