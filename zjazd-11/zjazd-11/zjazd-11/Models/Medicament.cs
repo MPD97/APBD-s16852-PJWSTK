@@ -33,6 +33,5 @@ namespace zjazd_11.Models
 
         [MaxLength(100)]
         public string Details { get; set; }
-
     }
 }
