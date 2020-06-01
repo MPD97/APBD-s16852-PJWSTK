@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace zjazd_11.Models
 {
@@ -19,5 +20,7 @@ namespace zjazd_11.Models
 
         [MaxLength(100)]
         public decimal LastName { get; set; }
+
+        public DateTime BirthDate { get; set; }
     }
 }
