@@ -26,29 +26,36 @@ namespace Cw3.Controllers
         [HttpGet]
         public async Task<IActionResult> GetStudent()
         {
-            return Ok(Context.Student.ToArrayAsync());
+            return Ok( await Context.Student.ToArrayAsync());
         }
         [HttpGet("{indexNumber}")]
-        public IActionResult GetStudent(string indexNumber)
+        public async Task<IActionResult> GetStudent(string indexNumber)
         {
-            return Ok(Context.Student.FirstOrDefaultAsync(student => student.IndexNumber == indexNumber));
+            return Ok( await Context.Student.FirstOrDefaultAsync(student => student.IndexNumber == indexNumber));
         }
 
         [HttpPost]
-        public IActionResult CreateStudent(Student student)
+        public IActionResult CreateStudent(Models.Student student)
         {
             student.IndexNumber = $"s{new Random().Next(1, 20000)}";
             return Ok(student);
         }
         [HttpPut]
-        public IActionResult PutStudent(int studentId)
+        public async Task<IActionResult> PutStudent(Cw4.Student model)
         {
-            if (studentId != 0)
+            Cw4.Student student = await Context.Student.FirstOrDefaultAsync(stud => stud.IndexNumber == model.IndexNumber);
+            if (student == null)
             {
-                return Ok("Aktualizacja dokończona");
+                return BadRequest("Student nie istnieje");
             }
 
-            return NotFound("Nie udało się zaktualizować studenta");
+            Context.Update(model);
+
+            if (await Context.SaveChangesAsync() > 0)
+            {
+                return Ok(model);
+            }
+            return StatusCode(500, "Nie można było zapisać studenta do bazy danych");
 
         }
 
