@@ -23,4 +23,18 @@ namespace zjazd_11.Models
 
         public DateTime BirthDate { get; set; }
     }
+
+    public class Doctor
+    {
+        public int DoctorId { get; set; }
+
+        [MaxLength(100)]
+        public decimal FirstName { get; set; }
+
+        [MaxLength(100)]
+        public decimal LastName { get; set; }
+
+        [MaxLength(100)]
+        public DateTime Email { get; set; }
+    }
 }
