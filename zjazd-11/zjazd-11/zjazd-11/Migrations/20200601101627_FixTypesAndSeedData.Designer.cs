@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using zjazd_11.Models;
 
 namespace zjazd_11.Migrations
 {
     [DbContext(typeof(s16852Context))]
-    partial class s16852ContextModelSnapshot : ModelSnapshot
+    [Migration("20200601101627_FixTypesAndSeedData")]
+    partial class FixTypesAndSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

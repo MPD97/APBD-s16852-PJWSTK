@@ -9,13 +9,13 @@ namespace zjazd_11.Models
         public int DoctorId { get; set; }
 
         [MaxLength(100)]
-        public decimal FirstName { get; set; }
+        public string FirstName { get; set; }
 
         [MaxLength(100)]
-        public decimal LastName { get; set; }
+        public string LastName { get; set; }
 
         [MaxLength(100)]
-        public DateTime Email { get; set; }
+        public String Email { get; set; }
 
         public virtual ICollection<Prescription> Prescriptions { get; set; }
     }

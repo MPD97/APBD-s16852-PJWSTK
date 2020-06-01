@@ -9,10 +9,10 @@ namespace zjazd_11.Models
         public int PatientId { get; set; }
 
         [MaxLength(100)]
-        public decimal FirstName { get; set; }
+        public string FirstName { get; set; }
 
         [MaxLength(100)]
-        public decimal LastName { get; set; }
+        public string LastName { get; set; }
 
         public DateTime BirthDate { get; set; }
 

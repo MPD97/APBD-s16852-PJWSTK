@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace zjazd_11.Models
@@ -7,8 +8,8 @@ namespace zjazd_11.Models
     {
         public int PrescriptionId { get; set; }
 
-        public decimal Date { get; set; }
-        public decimal DueDate { get; set; }
+        public DateTime Date { get; set; }
+        public DateTime DueDate { get; set; }
 
         public virtual ICollection<PrescriptionMedicament> PrescriptionMedicaments { get; set; }
 
