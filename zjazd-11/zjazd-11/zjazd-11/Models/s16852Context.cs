@@ -14,6 +14,12 @@ namespace zjazd_11.Models
         DbSet<Prescription> Prescriptions;
         DbSet<PrescriptionMedicament> PrescriptionMedicaments;
 
+        public s16852Context(DbContextOptions<s16852Context> options)
+           : base(options)
+        {
+        }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
