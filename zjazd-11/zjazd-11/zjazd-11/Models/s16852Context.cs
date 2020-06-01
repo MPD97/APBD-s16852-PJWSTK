@@ -8,11 +8,11 @@ namespace zjazd_11.Models
 {
     public class s16852Context : DbContext
     {
-        DbSet<Doctor> Doctors;
-        DbSet<Medicament> Medicaments;
-        DbSet<Patient> Patients;
-        DbSet<Prescription> Prescriptions;
-        DbSet<PrescriptionMedicament> PrescriptionMedicaments;
+        public virtual DbSet<Doctor> Doctors { get; set; }
+        public virtual DbSet<Medicament> Medicaments { get; set; }
+        public virtual DbSet<Patient> Patients { get; set; }
+        public virtual DbSet<Prescription> Prescriptions { get; set; }
+        public virtual DbSet<PrescriptionMedicament> PrescriptionMedicaments { get; set; }
 
         public s16852Context(DbContextOptions<s16852Context> options)
            : base(options)
@@ -24,6 +24,8 @@ namespace zjazd_11.Models
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<PrescriptionMedicament>().HasKey(k => k.MedicamentId);
+            modelBuilder.Entity<PrescriptionMedicament>().HasKey(k => k.PrescriptionId);
         }
     }
 }
