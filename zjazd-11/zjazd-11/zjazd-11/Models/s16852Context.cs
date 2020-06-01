@@ -24,8 +24,8 @@ namespace zjazd_11.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<PrescriptionMedicament>().HasKey(k => k.MedicamentId);
-            modelBuilder.Entity<PrescriptionMedicament>().HasKey(k => k.PrescriptionId);
+            modelBuilder.Entity<PrescriptionMedicament>().HasKey(k => new { k.PrescriptionId, k.MedicamentId });
+
         }
     }
 }

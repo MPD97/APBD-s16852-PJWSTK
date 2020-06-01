@@ -121,9 +121,10 @@ namespace zjazd_11.Migrations
             modelBuilder.Entity("zjazd_11.Models.PrescriptionMedicament", b =>
                 {
                     b.Property<int>("PrescriptionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    b.Property<int>("MedicamentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Details")
                         .HasColumnType("nvarchar(100)")
@@ -132,17 +133,9 @@ namespace zjazd_11.Migrations
                     b.Property<int?>("Dose")
                         .HasColumnType("int");
 
-                    b.Property<int>("MedicamentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PrescriptionId1")
-                        .HasColumnType("int");
-
-                    b.HasKey("PrescriptionId");
+                    b.HasKey("PrescriptionId", "MedicamentId");
 
                     b.HasIndex("MedicamentId");
-
-                    b.HasIndex("PrescriptionId1");
 
                     b.ToTable("PrescriptionMedicaments");
                 });
@@ -172,7 +165,7 @@ namespace zjazd_11.Migrations
 
                     b.HasOne("zjazd_11.Models.Prescription", "Prescription")
                         .WithMany("PrescriptionMedicaments")
-                        .HasForeignKey("PrescriptionId1")
+                        .HasForeignKey("PrescriptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

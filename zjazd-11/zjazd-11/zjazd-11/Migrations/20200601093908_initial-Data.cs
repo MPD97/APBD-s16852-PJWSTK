@@ -84,16 +84,14 @@ namespace zjazd_11.Migrations
                 name: "PrescriptionMedicaments",
                 columns: table => new
                 {
-                    PrescriptionId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     MedicamentId = table.Column<int>(nullable: false),
-                    PrescriptionId1 = table.Column<int>(nullable: false),
+                    PrescriptionId = table.Column<int>(nullable: false),
                     Dose = table.Column<int>(nullable: true),
                     Details = table.Column<string>(maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PrescriptionMedicaments", x => x.PrescriptionId);
+                    table.PrimaryKey("PK_PrescriptionMedicaments", x => new { x.PrescriptionId, x.MedicamentId });
                     table.ForeignKey(
                         name: "FK_PrescriptionMedicaments_Medicaments_MedicamentId",
                         column: x => x.MedicamentId,
@@ -101,8 +99,8 @@ namespace zjazd_11.Migrations
                         principalColumn: "MedicamentId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PrescriptionMedicaments_Prescriptions_PrescriptionId1",
-                        column: x => x.PrescriptionId1,
+                        name: "FK_PrescriptionMedicaments_Prescriptions_PrescriptionId",
+                        column: x => x.PrescriptionId,
                         principalTable: "Prescriptions",
                         principalColumn: "PrescriptionId",
                         onDelete: ReferentialAction.Cascade);
@@ -112,11 +110,6 @@ namespace zjazd_11.Migrations
                 name: "IX_PrescriptionMedicaments_MedicamentId",
                 table: "PrescriptionMedicaments",
                 column: "MedicamentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PrescriptionMedicaments_PrescriptionId1",
-                table: "PrescriptionMedicaments",
-                column: "PrescriptionId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prescriptions_DoctorId",
