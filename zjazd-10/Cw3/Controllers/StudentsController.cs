@@ -46,7 +46,7 @@ namespace Cw3.Controllers
             Cw4.Student student = await Context.Student.FirstOrDefaultAsync(stud => stud.IndexNumber == model.IndexNumber);
             if (student == null)
             {
-                return BadRequest("Student nie istnieje");
+                return NotFound("Student nie istnieje");
             }
 
             Context.Update(model);
@@ -60,15 +60,21 @@ namespace Cw3.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteStudent(int studentId)
+        public async Task<IActionResult> DeleteStudent(string studentId)
         {
-            if (studentId != 0)
+            Cw4.Student student = await Context.Student.FirstOrDefaultAsync(stud => stud.IndexNumber == studentId);
+            if (student == null)
             {
-                return Ok("Usuwanie ukończone");
+                return NotFound("Student nie istnieje");
             }
 
-            return NotFound("Nie udało się usunąć studenta");
+            Context.Remove(student);
 
+            if (await Context.SaveChangesAsync() > 0)
+            {
+                return Ok("Usunięto studenta");
+            }
+            return StatusCode(500, "Nie udało się usunąc studenta.");
         }
     }
 }
