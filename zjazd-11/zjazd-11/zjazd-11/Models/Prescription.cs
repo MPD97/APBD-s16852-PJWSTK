@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace zjazd_11.Models
@@ -9,6 +11,15 @@ namespace zjazd_11.Models
 
         public decimal Date { get; set; }
         public decimal DueDate { get; set; }
+
+        public virtual ICollection<PrescriptionMedicament> PrescriptionMedicaments { get; set; }
+
+        public int PatientId { get; set; }
+        public Patient Patient { get; set; }
+
+
+        public int DoctorId { get; set; }
+        public Doctor Doctor { get; set; }
     }
 
     public class Patient
@@ -22,6 +33,8 @@ namespace zjazd_11.Models
         public decimal LastName { get; set; }
 
         public DateTime BirthDate { get; set; }
+
+        public virtual ICollection<Prescription> Prescriptions { get; set; }
     }
 
     public class Doctor
@@ -36,5 +49,7 @@ namespace zjazd_11.Models
 
         [MaxLength(100)]
         public DateTime Email { get; set; }
+
+        public virtual ICollection<Prescription> Prescriptions { get; set; }
     }
 }
