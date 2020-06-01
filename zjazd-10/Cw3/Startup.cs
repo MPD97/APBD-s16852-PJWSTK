@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Cw4;
 using Cw4.Middlewares;
 using Cw4.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,6 +32,7 @@ namespace Cw3
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<s16852Context>();
             services.AddTransient<IStudentDbService, SqlServerStudentDbService>();
             services.AddTransient<IPasswordService, PBKDFPasswordService>();
 
