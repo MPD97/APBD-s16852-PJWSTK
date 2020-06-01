@@ -41,7 +41,7 @@ namespace Cw4.Controllers
             Studies studies = await Context.Studies.FirstOrDefaultAsync(stud => stud.Name == request.Studies);
             if (studies == null)
             {
-                return BadRequest("Studia nie istnieją");
+                return NotFound("Studia nie istnieją");
             }
 
             Enrollment enrollment = await Context.Enrollment.FirstOrDefaultAsync(en => en.IdStudy == studies.IdStudy && en.Semester == 1);
@@ -83,7 +83,7 @@ namespace Cw4.Controllers
 
         [HttpPost("promotions")]
         [Authorize(Roles = "employee")]
-        public IActionResult EnrollStudent(EnrollPromoteRequest request)
+        public async Task<IActionResult> EnrollStudent(EnrollPromoteRequest request)
         {
             if (ModelState.IsValid == false)
             {
@@ -91,14 +91,37 @@ namespace Cw4.Controllers
 
                 return BadRequest(allErrors);
             }
+            var studies = await Context.Studies.FirstOrDefaultAsync(stu => stu.Name == request.Studies);
 
-            var result = _service.PromoteStudents(request);
-            if (result.Success == false)
+            var enrolmentOld = await Context.Enrollment.FirstOrDefaultAsync(en => en.IdStudy == studies.IdStudy && en.Semester == request.Semester);
+
+            var enrollmentNew = await Context.Enrollment.FirstOrDefaultAsync(en => en.IdStudy == studies.IdStudy && en.Semester == request.Semester + 1);
+            if (enrollmentNew == null)
             {
-                return BadRequest(result.Message);
+                enrollmentNew = new Enrollment
+                {
+                    Semester = request.Semester + 1,
+                    IdStudy = Context.Studies.First(stu => stu.Name == request.Studies).IdStudy,
+                    StartDate = DateTime.Now,
+                };
+                Context.Enrollment.Add(enrollmentNew);
             }
 
-            return StatusCode(201, result.Model);
+            var students = await Context.Student.Where(stud => stud.IdEnrollment == enrolmentOld.IdEnrollment).ToArrayAsync();
+
+            foreach (var student in students)
+            {
+                student.IdEnrollment = enrollmentNew.IdEnrollment;
+            }
+            Context.Student.UpdateRange(students);
+
+
+            if (await Context.SaveChangesAsync() == 0)
+            {
+                return StatusCode(500, "Błąd podczas zapisu danych do bazy.");
+            }
+
+            return StatusCode(201, enrollmentNew);
         }
     }
 }
