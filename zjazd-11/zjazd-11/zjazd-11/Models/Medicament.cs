@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -18,5 +19,8 @@ namespace zjazd_11.Models
         
         [MaxLength(100)]
         public string Type { get; set; }
+
+
+        public virtual ICollection<PrescriptionMedicament> PrescriptionMedicaments { get; set; }
     }
 }
